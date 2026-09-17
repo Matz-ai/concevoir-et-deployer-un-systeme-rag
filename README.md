@@ -10,13 +10,13 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 2 / 12** ▓▓░░░░░░░░░░ 17 %
+**Avancement : 3 / 12** ▓▓▓░░░░░░░░░ 25 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
 | 0 | Cadrage & documentation | `consigne.md`, `README.md`, dépôt git | ✅ Fait |
 | 1 | Environnement de travail | `requirements.txt`, `.venv`, `check_env.py` | ✅ Fait |
-| 2 | Extraction OpenAgenda | `src/extract.py`, données brutes | ⬜ À faire |
+| 2 | Extraction OpenAgenda | `src/extract.py`, données brutes | ✅ Fait |
 | 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ⬜ À faire |
 | 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ⬜ À faire |
 | 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ⬜ À faire |
@@ -47,7 +47,8 @@ Les trois compétences évaluées par OpenClassrooms :
 Contraintes imposées par l'énoncé :
 
 - Données issues de l'**API OpenAgenda**, limitées à un périmètre géographique et à des évènements
-  de **moins d'un an**. Périmètre retenu : la **Seine-Saint-Denis (93)**.
+  de **moins d'un an**. Périmètre retenu : la **Seine-Saint-Denis (93)**, soit **4 760 évènements**
+  démarrant dans les douze derniers mois ou à venir.
 - Base vectorielle **reconstructible sur demande** (scripts de pré-processing et de vectorisation).
 - Pas d'historique de conversation dans le POC.
 

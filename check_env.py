@@ -1,9 +1,9 @@
-"""Verifie l'installation : importe chaque bibliotheque du POC et affiche sa version."""
+"""Vérifie l'installation : importe chaque bibliothèque du POC et affiche sa version."""
 
 import importlib
 from importlib.metadata import version
 
-# module a importer -> paquet pip correspondant
+# module à importer -> paquet pip correspondant
 BIBLIOTHEQUES = {
     "langchain": "langchain",
     "langchain_community": "langchain-community",
