@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 5 / 12** ▓▓▓▓▓░░░░░░░ 42 %
+**Avancement : 6 / 12** ▓▓▓▓▓▓░░░░░░ 50 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -19,7 +19,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 2 | Extraction OpenAgenda | `src/extract.py`, données brutes | ✅ Fait |
 | 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ✅ Fait |
 | 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ✅ Fait |
-| 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ⬜ À faire |
+| 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ✅ Fait |
 | 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ⬜ À faire |
 | 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ⬜ À faire |
 | 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ⬜ À faire |
@@ -113,7 +113,8 @@ cp .env.example .env
 ├── check_env.py         # vérifie que les bibliothèques sont installées
 ├── src/
 │   ├── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
-│   └── preprocess.py    # nettoyage et structuration du dataset
+│   ├── preprocess.py    # nettoyage et structuration du dataset
+│   └── build_index.py   # chunking, vectorisation Mistral et index Faiss
 ├── tests/
 │   └── test_data_quality.py  # contrôles de qualité du dataset
 ├── pytest.ini           # rend src/ importable par les tests
@@ -121,18 +122,47 @@ cp .env.example .env
 │   └── tests.yml        # pipeline CI : pytest à chaque push
 └── data/                # non versionné, reconstruit par les scripts
     ├── raw/             # réponses brutes de l'API
-    └── processed/       # dataset propre, prêt à indexer
+    ├── processed/       # dataset propre, prêt à indexer
+    └── faiss_index/     # index vectoriel (index.faiss + métadonnées)
 ```
 
-Les deux scripts se lancent depuis la racine du dépôt, dans l'ordre :
+Les trois scripts se lancent depuis la racine du dépôt, dans l'ordre :
 
 ```bash
 python src/extract.py
 python src/preprocess.py
+python src/build_index.py
 ```
 
 `preprocess.py` affiche en fin d'exécution le nombre d'évènements en entrée, ceux écartés par chaque
 règle de nettoyage et le nombre en sortie.
+
+---
+
+## 🔍 La base vectorielle
+
+`build_index.py` reconstruit l'index de bout en bout à chaque exécution — c'est la contrainte
+« base vectorielle reconstructible sur demande » de l'énoncé. Rien n'est versionné : l'index se
+régénère à partir de `data/processed/` en quelques minutes, pour environ **0,10 $** d'appels API.
+
+| Choix | Ce qui est fait | Pourquoi |
+| --- | --- | --- |
+| Texte vectorisé | titre + mots-clés + lieu + ville + dates + description | sans le lieu dans le vecteur, le même spectacle à Montreuil et à Bobigny est indiscernable en recherche sémantique |
+| Découpage | 1 000 caractères, recouvrement de 100 | 84 % des évènements tiennent en un seul chunk ; seules les longues programmations sont coupées |
+| Embeddings | `mistralai/mistral-embed-2312`, 1024 dimensions, par lots de 50 | modèle imposé par l'énoncé, appelé via OpenRouter |
+| Index | `IndexFlatL2`, le défaut de LangChain | recherche exacte, aucun paramètre à régler ; `IVF` et `HNSW` échangent du rappel contre de la vitesse, ce qui n'a d'intérêt qu'à partir de centaines de milliers de vecteurs |
+
+**4 559 évènements → 6 419 chunks → 6 419 vecteurs**, soit 26 Mo d'index et 8 Mo de métadonnées.
+Les métadonnées gardées à côté de chaque vecteur sont celles qu'exige l'énoncé (dates, lieux,
+descriptions), plus le `uid` qui relie un chunk à son évènement et le lien OpenAgenda.
+
+Deux détails qui se justifient à l'oral :
+
+- les vecteurs Mistral sont **normés** (norme = 1), donc la distance L2 classe exactement comme le
+  cosinus — le choix `IndexFlatL2` n'introduit aucun biais par rapport à `IndexFlatIP` ;
+- `OpenAIEmbeddings` compte par défaut les tokens avec `tiktoken` et envoie des identifiants de
+  tokens OpenAI à la place du texte, ce que l'endpoint Mistral refuse : d'où le
+  `check_embedding_ctx_length=False` dans le script.
 
 ---
 

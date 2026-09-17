@@ -2,6 +2,7 @@
 langchain==1.4.1
 langchain-community==0.4.2   # fournit le vectorstore FAISS (pas de paquet dedie officiel)
 langchain-openai==1.6.2      # modeles Mistral appeles via OpenRouter, API compatible OpenAI
+langchain-text-splitters==1.1.2  # decoupage des textes en chunks avant vectorisation
 
 # Base vectorielle
 faiss-cpu==1.15.1
