@@ -61,12 +61,20 @@ Contraintes imposées par l'énoncé :
 | Environnement | `venv` + `requirements.txt` | Imposé (venv ou conda) |
 | Source de données | API OpenAgenda | Imposé |
 | Manipulation de données | pandas | Recommandé par l'énoncé |
-| Embeddings & LLM | API Mistral | Imposé |
+| Embeddings | `mistralai/mistral-embed-2312` | Imposé (Mistral) |
+| Génération | modèle de chat Mistral | Imposé (Mistral) |
+| Accès aux modèles | OpenRouter | Voir note ci-dessous |
 | Base vectorielle | Faiss (`faiss-cpu`) | Imposé |
 | Orchestration RAG | LangChain | Imposé |
 | Tests | pytest + GitHub Actions | Tests « intégrés sous forme de pipeline » |
 
 Rien d'autre : ni API web, ni Docker, ni interface graphique — l'énoncé ne les demande pas.
+
+> **Note sur l'accès aux modèles.** Les modèles utilisés sont bien ceux de Mistral, comme l'impose
+> l'énoncé, mais ils sont appelés via OpenRouter plutôt que par une clé Mistral directe. OpenRouter
+> exposant une API compatible OpenAI, le code utilise `langchain-openai` avec un `base_url`
+> personnalisé. Repasser sur l'API Mistral native ne demande que de changer ce `base_url` et le nom
+> des modèles — c'est la recommandation faite pour la version de production.
 
 ---
 
