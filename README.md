@@ -47,7 +47,7 @@ Les trois compétences évaluées par OpenClassrooms :
 Contraintes imposées par l'énoncé :
 
 - Données issues de l'**API OpenAgenda**, limitées à un périmètre géographique et à des évènements
-  de **moins d'un an**.
+  de **moins d'un an**. Périmètre retenu : la **Seine-Saint-Denis (93)**.
 - Base vectorielle **reconstructible sur demande** (scripts de pré-processing et de vectorisation).
 - Pas d'historique de conversation dans le POC.
 
