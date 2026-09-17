@@ -29,7 +29,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 **Légende :** ✅ Fait · 🟡 En cours · ⬜ À faire
 
-Les étapes **4 et 5**, **7 et 8**, **9 et 10** sont indépendantes et peuvent être menées en parallèle.
+Les étapes sont menées **dans l'ordre**, une à la fois.
 
 > Le détail des étapes et les critères de validation de chacune sont dans `conv.md` (fichier local,
 > non versionné).
