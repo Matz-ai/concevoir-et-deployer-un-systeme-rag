@@ -10,12 +10,12 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 1 / 12** ▓░░░░░░░░░░░ 8 %
+**Avancement : 2 / 12** ▓▓░░░░░░░░░░ 17 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
 | 0 | Cadrage & documentation | `consigne.md`, `README.md`, dépôt git | ✅ Fait |
-| 1 | Environnement de travail | `requirements.txt`, `.venv`, `check_env.py` | ⬜ À faire |
+| 1 | Environnement de travail | `requirements.txt`, `.venv`, `check_env.py` | ✅ Fait |
 | 2 | Extraction OpenAgenda | `src/extract.py`, données brutes | ⬜ À faire |
 | 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ⬜ À faire |
 | 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ⬜ À faire |
@@ -80,10 +80,20 @@ Rien d'autre : ni API web, ni Docker, ni interface graphique — l'énoncé ne l
 
 ## 🚀 Reproduire le projet
 
-> Cette section sera complétée à l'étape 1.
+Python 3.11 ou 3.12 (Faiss n'est pas encore packagé pour les toutes dernières versions).
 
 ```bash
-# à venir
+git clone <url-du-depot> && cd concevoir-et-deployer-un-systeme-rag
+python -m venv .venv
+.venv\Scripts\activate          # Windows — sous Linux/macOS : source .venv/bin/activate
+pip install -r requirements.txt
+python check_env.py               # doit afficher les 8 versions sans erreur
+```
+
+Puis copier `.env.example` en `.env` et y renseigner la clé OpenRouter :
+
+```bash
+cp .env.example .env
 ```
 
 ---
@@ -96,7 +106,12 @@ Rien d'autre : ni API web, ni Docker, ni interface graphique — l'énoncé ne l
 .
 ├── consigne.md          # énoncé OpenClassrooms intégral
 ├── README.md            # ce fichier
-└── CLAUDE.md            # règles de travail pour l'assistant
+├── CLAUDE.md            # règles de travail pour l'assistant
+├── requirements.txt     # dépendances épinglées
+├── .env.example         # variable d'environnement attendue (clé OpenRouter)
+├── check_env.py         # vérifie que les bibliothèques sont installées
+└── src/
+    └── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
 ```
 
 ---

@@ -1,0 +1,15 @@
+# Orchestration RAG
+langchain==1.4.1
+langchain-community==0.4.2   # fournit le vectorstore FAISS (pas de paquet dedie officiel)
+langchain-openai==1.6.2      # modeles Mistral appeles via OpenRouter, API compatible OpenAI
+
+# Base vectorielle
+faiss-cpu==1.15.1
+
+# Donnees
+pandas==3.0.5
+requests==2.34.2
+
+# Configuration et tests
+python-dotenv==1.2.3
+pytest==9.1.1
