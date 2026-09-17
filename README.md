@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 4 / 12** ▓▓▓▓░░░░░░░░ 33 %
+**Avancement : 5 / 12** ▓▓▓▓▓░░░░░░░ 42 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -18,7 +18,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 1 | Environnement de travail | `requirements.txt`, `.venv`, `check_env.py` | ✅ Fait |
 | 2 | Extraction OpenAgenda | `src/extract.py`, données brutes | ✅ Fait |
 | 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ✅ Fait |
-| 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ⬜ À faire |
+| 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ✅ Fait |
 | 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ⬜ À faire |
 | 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ⬜ À faire |
 | 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ⬜ À faire |
@@ -114,6 +114,11 @@ cp .env.example .env
 ├── src/
 │   ├── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
 │   └── preprocess.py    # nettoyage et structuration du dataset
+├── tests/
+│   └── test_data_quality.py  # contrôles de qualité du dataset
+├── pytest.ini           # rend src/ importable par les tests
+├── .github/workflows/
+│   └── tests.yml        # pipeline CI : pytest à chaque push
 └── data/                # non versionné, reconstruit par les scripts
     ├── raw/             # réponses brutes de l'API
     └── processed/       # dataset propre, prêt à indexer
@@ -128,6 +133,27 @@ python src/preprocess.py
 
 `preprocess.py` affiche en fin d'exécution le nombre d'évènements en entrée, ceux écartés par chaque
 règle de nettoyage et le nombre en sortie.
+
+---
+
+## ✅ Tests
+
+```bash
+pytest
+```
+
+`tests/test_data_quality.py` vérifie ce qui partira dans la base vectorielle : périmètre
+Seine-Saint-Denis, évènements de moins d'un an, absence de doublons, champs indispensables
+renseignés. Chaque contrôle tourne deux fois — sur un échantillon de sept évènements construit dans
+le fichier de test, puis sur `data/processed/` s'il a été généré.
+
+Ce doublon n'est pas décoratif : l'échantillon rend les tests exécutables partout, y compris dans la
+CI qui n'a ni clé API ni données extraites, tandis que le passage sur le dataset réel est le seul à
+prouver que les évènements réellement indexés respectent les règles. Quand le dataset est absent, ces
+quatre tests sont marqués « skipped » plutôt que faussement verts.
+
+Le pipeline `.github/workflows/tests.yml` installe `requirements.txt` et lance `pytest` à chaque
+push — il vérifie donc aussi que l'environnement se réinstalle proprement sur une machine neuve.
 
 ---
 
