@@ -1,0 +1,23 @@
+# Environnement virtuel
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Secrets — la clé API Mistral ne doit jamais être versionnée
+.env
+
+# Données et index : reconstructibles par les scripts (cf. README)
+data/raw/
+data/processed/
+data/faiss_index/
+
+# Fichiers de travail locaux
+conv.md
+notes-perso/
+
+# OS et éditeurs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
