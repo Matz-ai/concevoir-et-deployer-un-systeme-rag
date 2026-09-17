@@ -10,14 +10,14 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 3 / 12** ▓▓▓░░░░░░░░░ 25 %
+**Avancement : 4 / 12** ▓▓▓▓░░░░░░░░ 33 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
 | 0 | Cadrage & documentation | `consigne.md`, `README.md`, dépôt git | ✅ Fait |
 | 1 | Environnement de travail | `requirements.txt`, `.venv`, `check_env.py` | ✅ Fait |
 | 2 | Extraction OpenAgenda | `src/extract.py`, données brutes | ✅ Fait |
-| 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ⬜ À faire |
+| 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ✅ Fait |
 | 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ⬜ À faire |
 | 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ⬜ À faire |
 | 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ⬜ À faire |
@@ -48,7 +48,7 @@ Contraintes imposées par l'énoncé :
 
 - Données issues de l'**API OpenAgenda**, limitées à un périmètre géographique et à des évènements
   de **moins d'un an**. Périmètre retenu : la **Seine-Saint-Denis (93)**, soit **4 760 évènements**
-  démarrant dans les douze derniers mois ou à venir.
+  démarrant dans les douze derniers mois ou à venir, **4 559** après nettoyage.
 - Base vectorielle **reconstructible sur demande** (scripts de pré-processing et de vectorisation).
 - Pas d'historique de conversation dans le POC.
 
@@ -111,9 +111,23 @@ cp .env.example .env
 ├── requirements.txt     # dépendances épinglées
 ├── .env.example         # variable d'environnement attendue (clé OpenRouter)
 ├── check_env.py         # vérifie que les bibliothèques sont installées
-└── src/
-    └── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
+├── src/
+│   ├── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
+│   └── preprocess.py    # nettoyage et structuration du dataset
+└── data/                # non versionné, reconstruit par les scripts
+    ├── raw/             # réponses brutes de l'API
+    └── processed/       # dataset propre, prêt à indexer
 ```
+
+Les deux scripts se lancent depuis la racine du dépôt, dans l'ordre :
+
+```bash
+python src/extract.py
+python src/preprocess.py
+```
+
+`preprocess.py` affiche en fin d'exécution le nombre d'évènements en entrée, ceux écartés par chaque
+règle de nettoyage et le nombre en sortie.
 
 ---
 
