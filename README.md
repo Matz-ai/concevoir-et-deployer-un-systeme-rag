@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 9 / 12** ▓▓▓▓▓▓▓▓▓░░░ 75 %
+**Avancement : 10 / 12** ▓▓▓▓▓▓▓▓▓▓░░ 83 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -23,7 +23,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ✅ Fait |
 | 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ✅ Fait |
 | 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ✅ Fait |
-| 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ⬜ À faire |
+| 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ✅ Fait |
 | 10 | Présentation (10–15 slides) | `livrables/presentation.pptx` | ⬜ À faire |
 | 11 | README final & packaging des livrables | zip de dépôt OpenClassrooms | ⬜ À faire |
 
@@ -124,6 +124,9 @@ cp .env.example .env
 ├── pytest.ini           # rend src/ importable par les tests
 ├── .github/workflows/
 │   └── tests.yml        # pipeline CI : pytest à chaque push
+├── livrables/
+│   ├── rapport_technique.md   # rapport technique, source Markdown
+│   └── rapport_technique.pdf  # rapport technique, 9 pages
 └── data/
     ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues
     ├── evaluation.csv   # résultats de la dernière évaluation, question par question
