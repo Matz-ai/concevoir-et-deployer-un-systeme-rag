@@ -70,26 +70,26 @@ def tableau(slide, x, y, l, lignes, largeurs, taille=15):
             p.font.color.rgb = BLANC if i == 0 else GRIS
 
 
-# 1 — titre
+# 1 : titre
 slide = pres.slides.add_slide(pres.slide_layouts[6])
 slide.background.fill.solid()
 slide.background.fill.fore_color.rgb = BLEU
 texte(slide, 0.9, 2.2, 11.5, 1.2, ["Un assistant RAG pour recommander des évènements culturels"], 38, BLANC, True)
-texte(slide, 0.9, 3.7, 11.5, 0.6, ["POC Puls-Events — OpenAgenda, Faiss, Mistral, LangChain"], 22, RGBColor(0xC9, 0xD8, 0xEE))
-texte(slide, 0.9, 5.6, 11.5, 0.9, ["Mathieu Zinzen — Data Engineer", "Soutenance — septembre 2026"], 16, RGBColor(0xC9, 0xD8, 0xEE))
+texte(slide, 0.9, 3.7, 11.5, 0.6, ["POC pour Puls-Events avec OpenAgenda, Faiss, Mistral et LangChain"], 22, RGBColor(0xC9, 0xD8, 0xEE))
+texte(slide, 0.9, 5.6, 11.5, 0.9, ["Mathieu Zinzen, Data Engineer", "Soutenance, septembre 2026"], 16, RGBColor(0xC9, 0xD8, 0xEE))
 
-# 2 — le besoin
+# 2 : le besoin
 slide = diapo("Le besoin de Puls-Events", 2)
 texte(slide, 0.8, 1.6, 6.2, 4.5, [
-    "Une plateforme de découverte d'évènements culturels, alimentée par OpenAgenda.",
-    "L'idée : un chatbot qui recommande en langage naturel.",
-    "La contrainte : ne recommander que des évènements réels — pas d'invention.",
-    "L'objectif du POC : prouver la faisabilité avant un déploiement plus large."], 20)
+    "Puls-Events aide ses utilisateurs à trouver des évènements culturels, à partir des données OpenAgenda.",
+    "Le projet : un chatbot à qui on pose une question en français.",
+    "Il ne doit proposer que des évènements qui existent vraiment.",
+    "Ce POC doit montrer que c'est faisable avant d'aller plus loin."], 20)
 boite(slide, 7.6, 1.8, 5, 1.1, ["« Un spectacle de marionnettes", "pour mon fils ? »"], taille=20)
 boite(slide, 7.6, 3.2, 5, 1.1, ["« Que faire le 21 juin 2027 ? »"], taille=20)
 boite(slide, 7.6, 4.6, 5, 1.1, ["« Qu'est-ce qui passe au Triton ? »"], taille=20)
 
-# 3 — le principe du RAG
+# 3 : le principe du RAG
 slide = diapo("Le RAG en un schéma", 3)
 etapes = [("Question", "de l'utilisateur"), ("Recherche", "dans la base vectorielle"),
           ("Contexte", "les évènements trouvés"), ("Génération", "le LLM rédige"), ("Réponse", "+ ses sources")]
@@ -99,12 +99,12 @@ for i, (titre, detail) in enumerate(etapes):
     if i < 4:
         fleche(slide, 2.65 + i * 2.55, 2.88)
 texte(slide, 0.8, 4.6, 11.8, 2, [
-    "Le modèle ne répond pas de mémoire : il reformule les évènements qu'on lui donne.",
-    "Retrieval = trouver les bons documents  ·  Augmented Generation = répondre à partir d'eux."], 20, align=PP_ALIGN.CENTER)
+    "Le modèle ne répond pas de mémoire : il s'appuie sur les évènements qu'on lui transmet.",
+    "Retrieval : on cherche les documents utiles. Generation : le modèle rédige la réponse avec."], 20, align=PP_ALIGN.CENTER)
 
-# 4 — architecture
+# 4 : architecture
 slide = diapo("Architecture retenue", 4)
-texte(slide, 0.6, 1.3, 6, 0.5, ["Hors ligne — reconstruction de la base, à la demande"], 17, CLAIR, True)
+texte(slide, 0.6, 1.3, 6, 0.5, ["Hors ligne : on reconstruit la base quand on veut"], 17, CLAIR, True)
 for i, (titre, detail) in enumerate([("OpenAgenda", "API open data"), ("extract.py", "4 569 bruts"),
                                      ("preprocess.py", "2 295 propres"), ("build_index.py", "chunks + Mistral"),
                                      ("Faiss", "3 860 vecteurs")]):
@@ -112,74 +112,74 @@ for i, (titre, detail) in enumerate([("OpenAgenda", "API open data"), ("extract.
     if i < 4:
         fleche(slide, 2.65 + i * 2.55, 2.33)
 boite(slide, 5.7, 3.3, 2.0, 0.6, ["pytest + CI"], fond=RGBColor(0xFD, 0xEB, 0xD9), couleur=ORANGE, taille=14)
-texte(slide, 0.6, 4.2, 6, 0.5, ["En ligne — une question (src/rag.py, LangChain)"], 17, CLAIR, True)
+texte(slide, 0.6, 4.2, 12, 0.5, ["En ligne : ce qui se passe quand on pose une question (src/rag.py)"], 17, CLAIR, True)
 for i, (titre, detail) in enumerate([("Question", "chat.py"), ("mistral-embed", "vectorise"),
                                      ("Faiss", "10 chunks à venir"), ("Mistral Large", "rédige"),
                                      ("Réponse", "+ sources")]):
     boite(slide, 0.6 + i * 2.55, 4.8, 2.0, 1.2, [titre, detail], fond=BLEU, couleur=BLANC, taille=17)
     if i < 4:
         fleche(slide, 2.65 + i * 2.55, 5.23)
-texte(slide, 0.6, 6.3, 12, 0.5, ["Modèles Mistral appelés via OpenRouter (API compatible OpenAI) — une ligne à changer pour l'API Mistral directe."], 14)
+texte(slide, 0.6, 6.3, 12, 0.5, ["Les modèles Mistral sont appelés via OpenRouter. Pour passer directement par l'API Mistral, il suffit de changer l'URL."], 14)
 
-# 5 — données
+# 5 : données
 slide = diapo("Les données OpenAgenda", 5)
 for i, (chiffre, legende) in enumerate([("4 569", "évènements extraits"), ("2 295", "après nettoyage"), ("276", "encore à venir")]):
     texte(slide, 0.8 + i * 4.1, 1.7, 3.6, 1, [chiffre], 54, BLEU, True, PP_ALIGN.CENTER)
     texte(slide, 0.8 + i * 4.1, 2.8, 3.6, 0.6, [legende], 18, GRIS, align=PP_ALIGN.CENTER)
 texte(slide, 0.8, 4.0, 11.8, 3, [
-    "Périmètre : Seine-Saint-Denis (93) — dense, et reconstructible en quelques minutes.",
-    "Fenêtre : un an d'historique + tous les évènements à venir, filtrés côté serveur.",
-    "Source : jeu open data « evenements-publics-openagenda », sans clé, 56 champs → 12 retenus.",
-    "Villes les plus représentées : Saint-Denis (421), Saint-Ouen (300), Montreuil (201)."], 19)
+    "Périmètre : la Seine-Saint-Denis (93). Assez d'évènements, et un index rapide à reconstruire.",
+    "Période : un an d'historique et les évènements à venir, filtrés directement par l'API.",
+    "Source : le jeu open data evenements-publics-openagenda, sans clé. On garde 12 champs sur 56.",
+    "Villes principales : Saint-Denis (421), Saint-Ouen (300), Montreuil (201)."], 19)
 
-# 6 — nettoyage et qualité
+# 6 : nettoyage et qualité
 slide = diapo("Pré-processing et qualité des données", 6)
 tableau(slide, 0.6, 1.5, 6.4, [["Règle de nettoyage", "Écartés"], ["Agenda France Travail (emploi)", "2 146"],
                                ["Description inexploitable", "83"], ["Doublon titre + date + lieu", "43"],
-                               ["Annulé", "2"], ["Hors 93 / plus d'un an", "0"]], [5.0, 1.4])
+                               ["Annulé", "2"], ["Hors 93 ou plus d'un an", "0"]], [5.0, 1.4])
 texte(slide, 7.5, 1.5, 5.3, 5.5, [
-    "Près de la moitié du brut était des ateliers France Travail : trouvé en explorant, pas en codant.",
-    "Texte : HTML retiré, description la plus complète gardée.",
-    "pytest vérifie périmètre, moins d'un an, doublons, champs indispensables.",
-    "Sur un échantillon versionné (CI GitHub Actions) et sur le dataset réel."], 18)
+    "Presque la moitié des données brutes étaient des ateliers France Travail. Je l'ai vu en explorant le jeu de données.",
+    "Les descriptions sont nettoyées du HTML, et on garde la version la plus complète.",
+    "Les tests pytest vérifient le périmètre, la date, les doublons et les champs obligatoires.",
+    "Ils tournent sur un petit échantillon dans GitHub Actions, et sur le vrai dataset en local."], 18)
 
-# 7 — vectorisation et Faiss
+# 7 : vectorisation et Faiss
 slide = diapo("Vectorisation et index Faiss", 7)
 tableau(slide, 0.6, 1.5, 12.1, [["Choix", "Ce qui est fait", "Pourquoi"],
-                                ["Texte vectorisé", "titre + mots-clés + lieu + dates + description", "le lieu doit peser dans le vecteur"],
-                                ["Chunks", "1 000 caractères, recouvrement 100", "74 % des évènements = 1 chunk"],
-                                ["Embeddings", "mistral-embed, 1 024 dimensions", "imposé ; vecteurs normés"],
-                                ["Index", "IndexFlatL2 — recherche exacte", "3 860 vecteurs : quelques ms, 16 Mo"]],
+                                ["Texte vectorisé", "titre + mots-clés + lieu + dates + description", "distinguer un spectacle joué dans deux villes"],
+                                ["Chunks", "1 000 caractères, recouvrement 100", "74 % des évènements tiennent en un chunk"],
+                                ["Embeddings", "mistral-embed, 1 024 dimensions", "imposé par l'énoncé"],
+                                ["Index", "IndexFlatL2 (recherche exacte)", "3 860 vecteurs : quelques ms, 16 Mo"]],
         [2.4, 5.2, 4.5], 16)
 texte(slide, 0.6, 4.6, 12, 2, [
-    "Vecteurs normés : la distance L2 classe exactement comme le cosinus.",
-    "IVF / HNSW : utiles à partir de centaines de milliers de vecteurs — pas ici.",
-    "Reconstruction complète : quelques minutes, environ 0,10 $."], 18)
+    "Les vecteurs Mistral sont normés : la distance L2 donne le même classement que le cosinus.",
+    "Des index comme IVF ou HNSW deviennent utiles à partir de quelques centaines de milliers de vecteurs.",
+    "Reconstruire tout l'index prend quelques minutes et coûte environ 0,10 $."], 18)
 
-# 8 — la chaîne
+# 8 : la chaîne
 slide = diapo("La chaîne LangChain + Mistral", 8)
 texte(slide, 0.8, 1.5, 6, 5, [
-    "Recherche : 10 chunks, filtrés sur date de fin ≥ aujourd'hui.",
-    "Contexte : date complète ajoutée (OpenAgenda omet l'année).",
-    "Génération : mistral-large, température 0, ~0,002 $ par question.",
-    "Consigne : répondre uniquement à partir des évènements, sinon le dire.",
-    "Pas d'historique : chaque question est traitée seule."], 19)
-boite(slide, 7.3, 1.6, 5.3, 2.2, ["Pourquoi LangChain ?", "Des briques interchangeables — splitter, embeddings, Faiss, prompt, modèle — composées en une chaîne lisible, avec retry intégré."], taille=19)
-boite(slide, 7.3, 4.2, 5.3, 2.0, ["Filtrer plutôt que demander", "Dire au modèle d'ignorer le passé ne marchait pas ; filtrer avant lui est déterministe."], taille=19)
+    "Recherche : 10 chunks, seulement parmi les évènements pas encore terminés.",
+    "On ajoute la date complète à chaque chunk, car OpenAgenda n'affiche pas l'année.",
+    "Génération : mistral-large, température 0, environ 0,002 $ par question.",
+    "Le prompt demande de répondre seulement avec les évènements fournis, et de le dire s'il n'y a rien.",
+    "Pas d'historique : chaque question est traitée à part."], 19)
+boite(slide, 7.3, 1.6, 5.3, 2.2, ["Pourquoi LangChain ?", "Chaque brique (découpage, embeddings, Faiss, prompt, modèle) se remplace facilement, et la chaîne tient en quelques lignes."], taille=19)
+boite(slide, 7.3, 4.2, 5.3, 2.0, ["Pourquoi filtrer les dates ?", "Quand on demandait au modèle d'ignorer les évènements passés, il ne le faisait pas toujours. Avec un filtre, c'est garanti."], taille=19)
 
-# 9 — protocole
+# 9 : protocole
 slide = diapo("Protocole d'évaluation", 9)
 texte(slide, 0.8, 1.5, 6, 5, [
-    "20 questions annotées à la main sur des évènements réels de l'index.",
-    "8 par thème · 5 par lieu · 4 par date · 3 hors corpus.",
-    "Critère de l'énoncé : même sens, mêmes informations que la réponse annotée.",
-    "Juge : Mistral (LLM-as-a-judge), relu à la main — accord 18 / 20.",
-    "En plus, sans LLM : le rappel de la recherche."], 19)
-tableau(slide, 7.2, 1.6, 5.5, [["Alternative", "Écartée car"], ["Égalité exacte", "aucune reformulation"],
-                               ["Mots-clés", "ne lit pas un « non »"], ["Similarité", "sujet ≠ exactitude"]], [2.3, 3.2], 16)
+    "20 questions écrites à la main à partir d'évènements présents dans l'index.",
+    "8 sur un thème, 5 sur un lieu, 4 sur une date et 3 hors sujet.",
+    "Critère de l'énoncé : même sens et mêmes informations que la réponse attendue.",
+    "C'est un modèle Mistral qui juge. J'ai relu ses 20 verdicts et je suis d'accord sur 18.",
+    "On mesure aussi, sans LLM, si la recherche a trouvé les bons évènements."], 19)
+tableau(slide, 7.2, 1.6, 5.5, [["Autre méthode", "Pourquoi je ne l'ai pas gardée"], ["Comparaison exacte", "refuse toute reformulation"],
+                               ["Mots-clés", "ne comprend pas une réponse négative"], ["Similarité", "ne vérifie ni les dates ni les lieux"]], [2.3, 3.2], 16)
 
-# 10 — résultats
-slide = diapo("Résultats : 9 / 20 réponses correctes", 10)
+# 10 : résultats
+slide = diapo("Résultats : 9 réponses correctes sur 20", 10)
 donnees = CategoryChartData()
 donnees.categories = ["Thème (8)", "Lieu (5)", "Date (4)", "Hors corpus (3)"]
 donnees.add_series("Correctes (%)", (50, 40, 25, 67))
@@ -194,22 +194,22 @@ graphique.value_axis.maximum_scale, graphique.value_axis.has_major_gridlines = 1
 graphique.value_axis.visible = False
 graphique.category_axis.tick_labels.font.size = Pt(14)
 texte(slide, 7.6, 1.6, 5.2, 5.3, [
-    "Rappel moyen de la recherche : 52 %.",
-    "10 des 11 échecs : la recherche n'a pas trouvé les évènements.",
-    "Quand elle les trouve tous : 6 réponses justes sur 7.",
-    "La recherche est le maillon faible, pas la génération.",
-    "Jazz : rangs 114 et 388 — le mot n'est que dans les mots-clés."], 18)
+    "La recherche retrouve en moyenne 52 % des évènements attendus.",
+    "Sur les 11 erreurs, 10 viennent d'une recherche incomplète.",
+    "Quand la recherche trouve tout, 6 réponses sur 7 sont justes.",
+    "C'est donc la recherche qu'il faut améliorer en priorité.",
+    "Exemple : les concerts de jazz sortent aux rangs 114 et 388, car « jazz » n'est que dans leurs mots-clés."], 18)
 
-# 11 — démo
+# 11 : démo
 slide = pres.slides.add_slide(pres.slide_layouts[6])
 slide.background.fill.solid()
 slide.background.fill.fore_color.rgb = BLEU
 texte(slide, 0.9, 2.4, 11.5, 1, ["Démo live"], 48, BLANC, True, PP_ALIGN.CENTER)
 texte(slide, 0.9, 3.7, 11.5, 0.6, ["python src/chat.py"], 24, RGBColor(0xC9, 0xD8, 0xEE), align=PP_ALIGN.CENTER)
-texte(slide, 0.9, 4.6, 11.5, 1, ["une question simple · un lieu · une date · une recommandation · une question hors corpus"], 18,
+texte(slide, 0.9, 4.6, 11.5, 1, ["Cinq questions : une simple, un lieu, une date, une recommandation et une hors sujet"], 18,
       RGBColor(0xC9, 0xD8, 0xEE), align=PP_ALIGN.CENTER)
 
-# 12 — limites et recommandations
+# 12 : limites et recommandations
 slide = diapo("Limites et recommandations", 12)
 tableau(slide, 0.6, 1.5, 12.1, [["Priorité", "Recommandation", "Ce que ça corrige"],
                                 ["1", "Recherche hybride BM25 + vecteurs", "thèmes, noms de lieux"],
@@ -220,7 +220,7 @@ tableau(slide, 0.6, 1.5, 12.1, [["Priorité", "Recommandation", "Ce que ça corr
                                 ["3", "Jeu de test rejoué chaque semaine + suivi", "dérives de qualité"]],
         [1.3, 6.4, 4.4], 16)
 texte(slide, 0.6, 5.3, 12, 1.5, [
-    "Le POC fonctionne de bout en bout ; l'évaluation désigne précisément ce qu'il faut améliorer.",
-    "Le jeu de test vieillit : valable jusqu'au 30 octobre 2026, à ré-annoter régulièrement."], 18)
+    "Le POC marche de bout en bout, et l'évaluation montre où l'améliorer.",
+    "Le jeu de test n'est valable que jusqu'au 30 octobre 2026 : il faudra le mettre à jour."], 18)
 
 pres.save("livrables/presentation.pptx")
