@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 6 / 12** ▓▓▓▓▓▓░░░░░░ 50 %
+**Avancement : 7 / 12** ▓▓▓▓▓▓▓░░░░░ 58 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -20,7 +20,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 3 | Pré-processing & nettoyage | `src/preprocess.py`, dataset propre | ✅ Fait |
 | 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ✅ Fait |
 | 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ✅ Fait |
-| 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ⬜ À faire |
+| 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ✅ Fait |
 | 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ⬜ À faire |
 | 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ⬜ À faire |
 | 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ⬜ À faire |
@@ -47,8 +47,9 @@ Les trois compétences évaluées par OpenClassrooms :
 Contraintes imposées par l'énoncé :
 
 - Données issues de l'**API OpenAgenda**, limitées à un périmètre géographique et à des évènements
-  de **moins d'un an**. Périmètre retenu : la **Seine-Saint-Denis (93)**, soit **4 760 évènements**
-  démarrant dans les douze derniers mois ou à venir, **4 559** après nettoyage.
+  de **moins d'un an**. Périmètre retenu : la **Seine-Saint-Denis (93)**, soit **4 569 évènements**
+  démarrant dans les douze derniers mois ou à venir, **2 295** après nettoyage — dont 2 146 ateliers
+  d'agences France Travail écartés, qui ne sont pas des évènements culturels.
 - Base vectorielle **reconstructible sur demande** (scripts de pré-processing et de vectorisation).
 - Pas d'historique de conversation dans le POC.
 
@@ -114,7 +115,8 @@ cp .env.example .env
 ├── src/
 │   ├── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
 │   ├── preprocess.py    # nettoyage et structuration du dataset
-│   └── build_index.py   # chunking, vectorisation Mistral et index Faiss
+│   ├── build_index.py   # chunking, vectorisation Mistral et index Faiss
+│   └── rag.py           # chaîne RAG : recherche Faiss + réponse Mistral
 ├── tests/
 │   └── test_data_quality.py  # contrôles de qualité du dataset
 ├── pytest.ini           # rend src/ importable par les tests
@@ -148,11 +150,11 @@ régénère à partir de `data/processed/` en quelques minutes, pour environ **0
 | Choix | Ce qui est fait | Pourquoi |
 | --- | --- | --- |
 | Texte vectorisé | titre + mots-clés + lieu + ville + dates + description | sans le lieu dans le vecteur, le même spectacle à Montreuil et à Bobigny est indiscernable en recherche sémantique |
-| Découpage | 1 000 caractères, recouvrement de 100 | 84 % des évènements tiennent en un seul chunk ; seules les longues programmations sont coupées |
+| Découpage | 1 000 caractères, recouvrement de 100 | 74 % des évènements tiennent en un seul chunk ; seules les longues programmations sont coupées |
 | Embeddings | `mistralai/mistral-embed-2312`, 1024 dimensions, par lots de 50 | modèle imposé par l'énoncé, appelé via OpenRouter |
 | Index | `IndexFlatL2`, le défaut de LangChain | recherche exacte, aucun paramètre à régler ; `IVF` et `HNSW` échangent du rappel contre de la vitesse, ce qui n'a d'intérêt qu'à partir de centaines de milliers de vecteurs |
 
-**4 559 évènements → 6 419 chunks → 6 419 vecteurs**, soit 26 Mo d'index et 8 Mo de métadonnées.
+**2 295 évènements → 3 860 chunks → 3 860 vecteurs**, soit 16 Mo d'index et 4,5 Mo de métadonnées.
 Les métadonnées gardées à côté de chaque vecteur sont celles qu'exige l'énoncé (dates, lieux,
 descriptions), plus le `uid` qui relie un chunk à son évènement et le lien OpenAgenda.
 
@@ -163,6 +165,37 @@ Deux détails qui se justifient à l'oral :
 - `OpenAIEmbeddings` compte par défaut les tokens avec `tiktoken` et envoie des identifiants de
   tokens OpenAI à la place du texte, ce que l'endpoint Mistral refuse : d'où le
   `check_embedding_ctx_length=False` dans le script.
+
+---
+
+## 💬 La chaîne RAG
+
+```bash
+python src/rag.py "Quels concerts de jazz sont prévus ?"
+```
+
+`rag.py` affiche la réponse, puis les évènements récupérés dans l'index (titre, date, lieu).
+
+| Choix | Ce qui est fait | Pourquoi |
+| --- | --- | --- |
+| Modèle de génération | `mistralai/mistral-large-2512`, `temperature=0` | servi directement par Mistral sur OpenRouter, pour environ 0,002 $ par question ; `mistral-small-2603`, moins cher, était saturé (erreurs 429 en série) au moment des tests |
+| Évènements passés | filtre `date_fin ≥ aujourd'hui` à la recherche | l'index garde un an d'historique comme le demande l'énoncé, mais seuls 276 évènements sur 2 295 sont encore d'actualité ; demander au modèle d'ignorer les dates passées ne marchait pas, filtrer avant lui est déterministe |
+| Nombre de chunks (`k`) | 10 | à 5, des concerts de jazz pourtant présents dans l'index n'étaient pas remontés ; 10 chunks restent courts (environ 3 000 tokens) et le modèle écarte ceux qui ne répondent pas |
+| Hallucinations | consigne système : répondre uniquement à partir des évènements fournis, et dire franchement quand aucun ne convient | une question hors corpus (« un match du PSG au Parc des Princes ? ») obtient bien un « non » plutôt qu'une invention |
+
+La date du jour est donnée au modèle, et chaque chunk est préfixé de sa date de début complète : les
+dates affichées par OpenAgenda (« Samedi 3 octobre ») n'ont pas d'année. Pas d'historique de
+conversation : chaque question est traitée seule, comme le permet l'énoncé.
+
+La recherche passe par la chaîne LangChain elle-même : `index.as_retriever(...)` récupère les
+chunks, puis le prompt et Mistral génèrent la réponse, et la chaîne renvoie la réponse avec ses
+sources pour que la démo puisse les afficher.
+
+**Limite observée :** la recherche est le maillon faible, pas la génération. La recherche purement
+sémantique capte mal un mot-clé précis : pour « Quels concerts de jazz sont prévus en
+Seine-Saint-Denis ? », les concerts de jazz à venir n'arrivent qu'aux rangs 44 et 47, derrière les
+évènements dont le texte contient « Seine-Saint-Denis » — et le modèle répond alors, à tort, qu'il
+n'y en a pas. L'évaluation de l'étape 7 le mesurera.
 
 ---
 

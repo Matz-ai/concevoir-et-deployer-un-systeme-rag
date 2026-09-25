@@ -13,11 +13,11 @@ ENTREE = Path("data/processed/evenements_93.csv")
 SORTIE = Path("data/faiss_index")
 MODELE = "mistralai/mistral-embed-2312"
 OPENROUTER = "https://openrouter.ai/api/v1"
-TAILLE_CHUNK = 1000  # caractères : 84 % des évènements tiennent en un seul chunk
+TAILLE_CHUNK = 1000  # caractères : 74 % des évènements tiennent en un seul chunk
 RECOUVREMENT = 100
 LOT = 50  # textes envoyés par appel à l'API
 
-METADONNEES = ["uid", "titre", "description", "date_debut", "dates_texte", "lieu", "ville", "lien"]
+METADONNEES = ["uid", "titre", "description", "date_debut", "date_fin", "dates_texte", "lieu", "ville", "lien"]
 
 
 def en_documents(evenements):

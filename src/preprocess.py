@@ -55,7 +55,8 @@ def meilleure_description(evenement):
 def nettoyer(bruts):
     """Applique les règles de nettoyage et renvoie le dataset propre avec le journal des écarts.
 
-    Les règles s'enchaînent dans l'ordre : périmètre géographique, fenêtre d'un an,
+    Les règles s'enchaînent dans l'ordre : périmètre géographique, agenda France Travail
+    (ateliers emploi publiés sur OpenAgenda, hors sujet pour Puls-Events), fenêtre d'un an,
     évènements annulés, doublons de publication, puis descriptions inexploitables.
     Chaque règle note combien de lignes elle écarte, pour que le récapitulatif final
     soit traçable.
@@ -69,6 +70,7 @@ def nettoyer(bruts):
         df = df[masque]
 
     garder(df["location_department"] == DEPARTEMENT, "hors Seine-Saint-Denis")
+    garder(~df["canonicalurl"].str.contains("openagenda.com/francetravail/"), "agenda France Travail (emploi, pas culture)")
     debut = pd.to_datetime(df["firstdate_begin"], format="ISO8601", utc=True)
     garder(debut >= pd.Timestamp.now(tz="UTC") - pd.DateOffset(years=1), "commencé il y a plus d'un an")
     garder(df["status"].map(lambda s: json.loads(s)["label"]["fr"]) != "Annulé", "annulé par l'organisateur")

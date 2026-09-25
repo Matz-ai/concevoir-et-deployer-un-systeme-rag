@@ -29,11 +29,13 @@ def evenement(**champs):
     } | champs
 
 
-ECHANTILLON = [  # deux évènements valides, puis une violation de chacune des cinq règles
+ECHANTILLON = [  # deux évènements valides, puis une violation de chacune des six règles
     evenement(),
     evenement(uid=2, title_fr="Exposition photo", location_name="Médiathèque"),
     evenement(uid=3, title_fr="Concert symphonique", location_department="Paris",
               location_name="Philharmonie", location_city="Paris"),
+    evenement(uid=8, title_fr="Atelier CV", location_name="Agence Bobigny",
+              canonicalurl="https://openagenda.com/francetravail/events/atelier-cv"),
     evenement(uid=4, firstdate_begin=(MAINTENANT - pd.DateOffset(years=2)).isoformat()),
     evenement(uid=5, title_fr="Atelier de gravure", status='{"label": {"fr": "Annulé"}}'),
     evenement(uid=6),  # même titre, même date et même lieu que le premier
@@ -75,4 +77,4 @@ def test_champs_indispensables_a_l_indexation(evenements):
 
 def test_chaque_regle_de_nettoyage_ecarte_son_evenement():
     _, journal = nettoyer(ECHANTILLON)
-    assert list(journal.values()) == [1, 1, 1, 1, 1]
+    assert list(journal.values()) == [1, 1, 1, 1, 1, 1]
