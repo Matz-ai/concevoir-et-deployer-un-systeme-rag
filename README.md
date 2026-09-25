@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 7 / 12** ▓▓▓▓▓▓▓░░░░░ 58 %
+**Avancement : 8 / 12** ▓▓▓▓▓▓▓▓░░░░ 67 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -21,7 +21,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 4 | Tests unitaires + pipeline CI | `tests/`, GitHub Actions | ✅ Fait |
 | 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ✅ Fait |
 | 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ✅ Fait |
-| 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ⬜ À faire |
+| 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ✅ Fait |
 | 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ⬜ À faire |
 | 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ⬜ À faire |
 | 10 | Présentation (10–15 slides) | `livrables/presentation.pptx` | ⬜ À faire |
@@ -116,14 +116,17 @@ cp .env.example .env
 │   ├── extract.py       # extraction des évènements OpenAgenda (Seine-Saint-Denis)
 │   ├── preprocess.py    # nettoyage et structuration du dataset
 │   ├── build_index.py   # chunking, vectorisation Mistral et index Faiss
-│   └── rag.py           # chaîne RAG : recherche Faiss + réponse Mistral
+│   ├── rag.py           # chaîne RAG : recherche Faiss + réponse Mistral
+│   └── evaluate.py      # évaluation sur le jeu de test annoté (juge Mistral)
 ├── tests/
 │   └── test_data_quality.py  # contrôles de qualité du dataset
 ├── pytest.ini           # rend src/ importable par les tests
 ├── .github/workflows/
 │   └── tests.yml        # pipeline CI : pytest à chaque push
-└── data/                # non versionné, reconstruit par les scripts
-    ├── raw/             # réponses brutes de l'API
+└── data/
+    ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues
+    ├── evaluation.csv   # résultats de la dernière évaluation, question par question
+    ├── raw/             # non versionné, reconstruit par les scripts : réponses brutes de l'API
     ├── processed/       # dataset propre, prêt à indexer
     └── faiss_index/     # index vectoriel (index.faiss + métadonnées)
 ```
@@ -195,7 +198,68 @@ sources pour que la démo puisse les afficher.
 sémantique capte mal un mot-clé précis : pour « Quels concerts de jazz sont prévus en
 Seine-Saint-Denis ? », les concerts de jazz à venir n'arrivent qu'aux rangs 44 et 47, derrière les
 évènements dont le texte contient « Seine-Saint-Denis » — et le modèle répond alors, à tort, qu'il
-n'y en a pas. L'évaluation de l'étape 7 le mesurera.
+n'y en a pas. L'évaluation ci-dessous le mesure.
+
+---
+
+## 📏 L'évaluation
+
+```bash
+python src/evaluate.py
+```
+
+**Le jeu de test** (`data/qa_test.json`) : 20 questions annotées à la main à partir des évènements
+réellement présents dans l'index — 8 par thème, 5 par lieu, 4 par date, 3 hors corpus pour vérifier
+que le système n'invente rien. Chaque paire donne la réponse attendue et les `uid` des évènements
+qui doivent être retrouvés.
+
+**La mesure.** Le critère de l'énoncé — *« même sens et mêmes informations que la réponse
+annotée »* — est appliqué par un **juge Mistral** (LLM-as-a-judge, `temperature=0`), qui rend
+CORRECT ou INCORRECT avec une justification. Les alternatives ont été écartées : la comparaison
+exacte ne tolère aucune reformulation, le recouvrement de mots-clés ne sait pas lire un « non », et
+la similarité d'embeddings mesure la proximité du sujet, pas l'exactitude d'une date. En parallèle,
+sans LLM, le script mesure le **rappel de la recherche** : combien d'évènements attendus figurent
+dans les 10 chunks récupérés. C'est ce qui permet de savoir si une erreur vient de la recherche ou
+de la génération.
+
+| Type | Réponses correctes |
+| --- | :-: |
+| Thème | 4 / 8 |
+| Lieu | 2 / 5 |
+| Date | 1 / 4 |
+| Hors corpus | 2 / 3 |
+| **Total** | **9 / 20 (45 %)** |
+
+Rappel moyen de la recherche : **52 %** sur les 17 questions qui attendent des évènements.
+
+Ce qu'on en tire :
+
+- **La recherche est le maillon faible.** Sur les 11 réponses incorrectes, 10 ont une recherche qui
+  n'a pas remonté tous les évènements attendus. Quand la recherche les trouve tous (7 questions),
+  la réponse est correcte 6 fois sur 7 après relecture.
+- **Le problème du jazz est confirmé et expliqué.** Les deux concerts de jazz attendus sortent aux
+  rangs 114 et 388 avec « en Seine-Saint-Denis » dans la question, et encore aux rangs 100 et 181
+  avec « Où écouter du jazz ? ». Le mot « jazz » n'est que dans leurs mots-clés, pas dans leur
+  description : leur vecteur parle d'autre chose. Une recherche hybride (mots-clés + sémantique) est
+  la recommandation pour la version finale.
+- **Les questions par date échouent** : un vecteur ne sait pas ce qu'est « le 13 décembre ». Un
+  filtre sur les métadonnées de date, comme celui déjà utilisé pour les évènements passés, y répondrait.
+- **Une hallucination** (question 17) : le modèle invente une tournée « potentiellement en
+  Seine-Saint-Denis » à partir d'un fragment de description. La consigne système ne suffit pas à
+  l'empêcher quand le contexte récupéré est hors sujet.
+
+**Honnêteté de la mesure.** Les 20 verdicts du juge ont été relus à la main (la réponse générée est
+gardée dans `data/evaluation.csv` pour ça) : accord sur **18 / 20**. Le juge est trop sévère sur la
+question météo (l'assistant refuse bien, puis suggère un évènement) et trop indulgent sur les
+expositions du musée Paul-Éluard (un titre manque) — les deux erreurs se compensent et le score
+humain est aussi de 9 / 20. Un modèle Mistral qui juge un modèle Mistral est un biais connu ; la
+relecture humaine est ce qui le contrôle. Le verdict peut aussi varier d'une exécution à l'autre
+malgré `temperature=0`.
+
+**Le jeu de test vieillit.** La chaîne ne recommande que les évènements à venir : les réponses
+attendues ne citent que des évènements à partir du 31 octobre 2026, et le jeu est valable jusqu'au
+30 octobre. En production, c'est le premier indicateur de dérive à surveiller — un corpus qui se
+renouvelle impose de ré-annoter régulièrement le jeu de test.
 
 ---
 

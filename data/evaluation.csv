@@ -1,0 +1,104 @@
+question,type,recherche,correct,justification,reponse
+Quels concerts de jazz sont prévus en Seine-S,thème,0/2,False,"La réponse de l'assistant contredit la réponse attendue en niant l'existence de concerts de jazz prévus, alors que deux événements sont mentionnés.","D'après les événements que j'ai en base, **aucun concert de jazz n'est prévu** en Seine-Saint-Denis dans la période couverte (jusqu'en juillet 2027). Je ne peux pas inventer d'événements qui ne figurent pas dans la liste fournie."
+Où écouter du jazz ?,thème,0/2,False,La réponse de l'assistant ne mentionne aucun des deux événements attendus (A Drop of Poison ou SOLANGE : Alone Together !) ni leurs dates ou lieux associés.,"Voici un événement en Seine-Saint-Denis où vous pourrez écouter du jazz :
+
+**Titre :** LES COULEURS DU SON : Naïssam Jalal ""Shining Legacy""
+**Date :** Dimanche 13 décembre 2026, 20h00
+**Lieu :** Conservatoire de musique et de danse Joséphine-Baker du Pré, Le Pré-Saint-Gervais"
+Je cherche un concert de blues.,thème,1/2,False,"La réponse de l'assistant ne mentionne pas le concert *A Drop of Poison* prévu le 6 novembre 2026 à Bondy, qui fait partie de la réponse attendue.","Voici les concerts de blues disponibles en Seine-Saint-Denis :
+
+1. **JOVIN WEBB + LILA MAY**
+   - **Date** : Samedi 17 octobre 2026, 20h30
+   - **Lieu** : L'Odéon, Tremblay-en-France
+
+2. **CHICAGO BLUES**
+   - **Date** : Samedi 5 décembre 2026, 20h30
+   - **Lieu** : L'Odéon, Tremblay-en-France
+   *(Avec Zac Harmon, Kingston Livingston et Lady Adrena, une immersion dans le blues du Mississippi.)*"
+Y a-t-il des spectacles de marionnettes ?,thème,1/3,False,La réponse de l'assistant ne mentionne que l'évènement *A Moi!* et omet les deux autres spectacles attendus (*Okilélé* et *Juste Irena*).,"Oui, voici un évènement avec des marionnettes :
+
+**Titre :** A Moi!
+**Date :** Du 17 au 20 novembre 2026
+**Lieu :** Salle Pablo Neruda, Bobigny
+
+Ce spectacle s'adresse au jeune public et explore l'imaginaire à travers les marionnettes."
+Quelles pièces de Shakespeare sont jouées ?,thème,2/2,True,"La réponse contient bien les deux pièces attendues (*Macbeth* et *Le Conte d'hiver*) avec leurs dates et lieux exacts, sans erreur ni omission.","Voici les pièces de Shakespeare jouées en Seine-Saint-Denis parmi les événements proposés :
+
+1. **Macbeth**
+   - **Dates** : 7-8 octobre et 14-15 novembre 2026
+   - **Lieu** : Espace Albatros
+
+2. **Le Conte d'hiver**
+   - **Date** : Vendredi 29 janvier 2027 (14h30 et 20h30)
+   - **Lieu** : Théâtre et cinéma Georges Simenon, Rosny-sous-Bois"
+Une exposition photo sur l'immigration ?,thème,1/1,True,"La réponse de l'assistant contient toutes les informations attendues (nom de l'exposition, dates, lieu) sans erreur, tout en ajoutant des précisions contextuelles qui n'altèrent pas sa justesse.","Voici une exposition qui correspond à votre demande sur le thème de l'immigration :
+
+**Exposition : *Bouba Touré, un photographe de l'immigration africaine***
+- **Dates** : 1er février - 30 septembre 2027
+- **Lieu** : Archives départementales de la Seine-Saint-Denis, Bobigny
+
+Cette exposition présente le fonds photographique de Bouba Touré, centré sur le quotidien des migrants d'Afrique subsaharienne en Seine-Saint-Denis, leurs luttes et leurs moments de vie."
+Un spectacle qui parle de piscine ou de natat,thème,1/1,True,"La réponse contient toutes les informations attendues (titre, dates, lieu) et ajoute des précisions sans les contredire.","Voici un événement qui correspond à votre demande :
+
+**Titre :** La ligne de nage
+**Date :** 11 et 12 mars 2027
+**Lieu :** Les 3T - Théâtre du Troisième Type, Saint-Denis
+
+Ce spectacle se déroule dans une piscine municipale et aborde des thèmes liés à la natation, la routine et la vulnérabilité."
+Où participer à une récolte d'olives ?,thème,2/2,True,"La réponse de l'assistant contient toutes les informations attendues (événement, dates, lieu de lancement) et les précise sans erreur, tout en ajoutant des détails complémentaires non obligatoires.","Voici les événements liés à la récolte d'olives en Seine-Saint-Denis :
+
+1. **Récolte oléicole en Seine-Saint-Denis**
+   - **Dates** : Du 31 octobre au 21 novembre 2026
+   - **Lieu** : Dans toutes les communes de Seine-Saint-Denis
+
+2. **Lancement de la récolte oléicole 2026**
+   - **Date** : Samedi 31 octobre, 11h00
+   - **Lieu** : Maison de quartier Floréal - La Saussaie - La Courtille, Saint-Denis
+   *(Au programme : repas partagé, performance artistique et récolte dans la ville.)*"
+"Qu'est-ce qui est programmé au Triton, aux Li",lieu,0/1,False,La réponse de l'assistant mentionne un événement différent (*Constellation quartet* au lieu de *Alone Together ! piano solo*) et une date erronée (26 septembre 2026 au lieu de 27 février 2027).,"Voici l'événement programmé au **Triton, Les Lilas** :
+
+**SOLANGE : Constellation quartet**
+- **Date** : Samedi 26 septembre, 20h30
+- **Lieu** : Le Triton, Les Lilas
+- **Description** : Jazz, musique contemporaine, groove, quartet et électronique avec l'ensemble SOLANGE de Bruno ANGELINI."
+Que voir à l'Odéon de Tremblay-en-France en d,lieu,1/1,True,"La réponse de l'assistant contient bien l'événement attendu (*Chicago Blues*), la date (*5 décembre*) et l'horaire (*20h30*), sans erreur ni omission.","Voici l'évènement à l'Odéon de Tremblay-en-France en décembre :
+
+**CHICAGO BLUES**
+- **Date** : Samedi 5 décembre, 20h30
+- **Lieu** : L'Odéon, Tremblay-en-France"
+Quels évènements à Clichy-sous-Bois ?,lieu,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'il n'y a aucun événement, alors qu'un spectacle (""Juste Irena"") est prévu le 4 mai 2027.",Je n'ai malheureusement aucun évènement prévu à Clichy-sous-Bois dans la liste fournie.
+Quelles expositions au musée Paul-Éluard de S,lieu,2/2,True,"La réponse contient bien les deux expositions attendues avec leurs dates exactes, malgré des détails supplémentaires et une imprécision sur le titre de la première exposition (qui correspond à *""Dans l'ombre des regards""* sans être nommé explicitement).","Voici les expositions prévues au **Musée d'art et d'histoire Paul Eluard** à Saint-Denis en 2026-2027 :
+
+1. **Florilège — Exposition**
+   - **Dates** : 26 avril - 6 juin 2027
+   - **Lieu** : Musée d'art et d'histoire Paul Eluard, Saint-Denis
+   *(Exposition sur les recherches en photographie de l'université Paris 8, en collaboration avec le département photographie et l'association Diaph8.)*
+
+2. **Exposition sans titre précis** *(mentionnée dans les données)*
+   - **Dates** : 25 mars - 5 décembre 2027
+   - **Lieu** : Musée d'art et d'histoire Paul Eluard, Saint-Denis
+   *(Détails non précisés dans les données fournies.)*"
+Que se passe-t-il à Montfermeil ?,lieu,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'il n'y a aucun événement, alors qu'un spectacle musical est prévu.",Je n'ai aucun événement à vous proposer à Montfermeil dans la liste fournie.
+Que faire le 21 juin 2027 ?,date,1/1,True,"La réponse de l'assistant contient bien l'événement attendu (*Faites de la musique !*), la date (21 juin 2027), le lieu (parc François Mitterrand, Bondy) et l'horaire (18h), avec des détails supplémentaires non contradictoires.","Le 21 juin 2027, je te recommande l'événement suivant en Seine-Saint-Denis :
+
+**Faites de la musique ! - Fête de la musique**
+Lundi 21 juin 2027, à partir de 18h00
+Parc François Mitterrand, Bondy
+
+Profite d'une soirée musicale en plein air avec chorale, fanfare de trompettes, orchestre à vent et bien d'autres surprises !"
+Quel spectacle voir le 1er décembre 2026 ?,date,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'aucun événement n'est programmé, alors qu'un spectacle précis est mentionné.",Je n'ai aucun événement programmé pour le **1er décembre 2026** dans la liste fournie. Je ne peux donc pas te recommander de spectacle à cette date.
+Quel concert le 13 décembre 2026 ?,date,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'aucun événement n'a lieu, alors qu'un concert est bien prévu à cette date.",Aucun événement ne correspond à un concert le **13 décembre 2026** dans la liste fournie.
+Quels spectacles le week-end du 28-29 novembr,date,0/2,False,La réponse de l'assistant ne mentionne aucun des deux spectacles attendus (*Le Banquet* et *Des luttes et des rêves*) et propose un événement non pertinent pour la période et le lieu demandés.,"Voici l'événement correspondant au week-end du **28-29 novembre 2026** en Seine-Saint-Denis :
+
+**Titre** : *Tournée Blues Explosion* (avec Zac Harmon, Lady Adrena et autres)
+**Date** : Du **7 novembre au 15 décembre 2026** (incluant le week-end du 28-29 novembre)
+**Lieu** : *Non précisé dans les données* (mais la tournée passe en Europe, donc potentiellement en Seine-Saint-Denis).
+
+*Aucun autre événement n'est programmé ce week-end dans les données fournies.*"
+Y a-t-il un match du PSG au Parc des Princes ,hors corpus,-,True,"La réponse de l'assistant a le même sens que la réponse attendue, confirmant l'absence d'événement correspondant sans erreur ni omission.",Je n'ai pas d'événement correspondant à un match du PSG au Parc des Princes dans les données fournies.
+Un concert de Beyoncé au Stade de France ?,hors corpus,-,True,"La réponse de l'assistant confirme l'absence de concert de Beyoncé au Stade de France, comme attendu, avec des précisions supplémentaires non contradictoires.",Aucun concert de Beyoncé au Stade de France n'est référencé dans les événements que je peux te proposer en Seine-Saint-Denis pour cette période.
+Quel temps fera-t-il demain à Bobigny ?,hors corpus,-,False,"La réponse de l'assistant ajoute une recommandation culturelle non attendue, alors que la réponse attendue se limite à indiquer l'impossibilité de répondre à la question sur la météo.","Je ne peux pas répondre à cette question, car je ne dispose que d'informations sur les événements culturels en Seine-Saint-Denis. Voici cependant un événement qui a lieu bientôt à Bobigny :
+
+**Portes ouvertes à Canal 93**
+- **Date** : Samedi 26 septembre 2026, à partir de 15h
+- **Lieu** : Canal 93, Bobigny"
