@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 8 / 12** ▓▓▓▓▓▓▓▓░░░░ 67 %
+**Avancement : 9 / 12** ▓▓▓▓▓▓▓▓▓░░░ 75 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -22,7 +22,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 5 | Chunking, embeddings & index Faiss | `src/build_index.py`, index Faiss | ✅ Fait |
 | 6 | Chaîne RAG LangChain + Mistral | `src/rag.py` | ✅ Fait |
 | 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ✅ Fait |
-| 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ⬜ À faire |
+| 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ✅ Fait |
 | 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ⬜ À faire |
 | 10 | Présentation (10–15 slides) | `livrables/presentation.pptx` | ⬜ À faire |
 | 11 | README final & packaging des livrables | zip de dépôt OpenClassrooms | ⬜ À faire |
@@ -117,6 +117,7 @@ cp .env.example .env
 │   ├── preprocess.py    # nettoyage et structuration du dataset
 │   ├── build_index.py   # chunking, vectorisation Mistral et index Faiss
 │   ├── rag.py           # chaîne RAG : recherche Faiss + réponse Mistral
+│   ├── chat.py          # démo live : chatbot en ligne de commande
 │   └── evaluate.py      # évaluation sur le jeu de test annoté (juge Mistral)
 ├── tests/
 │   └── test_data_quality.py  # contrôles de qualité du dataset
@@ -199,6 +200,22 @@ sémantique capte mal un mot-clé précis : pour « Quels concerts de jazz sont 
 Seine-Saint-Denis ? », les concerts de jazz à venir n'arrivent qu'aux rangs 44 et 47, derrière les
 évènements dont le texte contient « Seine-Saint-Denis » — et le modèle répond alors, à tort, qu'il
 n'y en a pas. L'évaluation ci-dessous le mesure.
+
+---
+
+## 🎤 La démo
+
+```bash
+python src/chat.py
+```
+
+Un chatbot en ligne de commande, comme le demande l'énoncé (« démo live depuis l'environnement
+local ») : on tape une question, il affiche la réponse puis les évènements récupérés dans l'index
+(titre, dates, lieu, ville). `q` pour quitter. Afficher les sources prouve que la réponse vient de
+l'index et non de la mémoire du modèle.
+
+Le pool Mistral partagé d'OpenRouter renvoie parfois des erreurs 429 en rafale : la chaîne retente
+jusqu'à six fois avant d'abandonner.
 
 ---
 
