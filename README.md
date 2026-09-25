@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 10 / 12** ▓▓▓▓▓▓▓▓▓▓░░ 83 %
+**Avancement : 11 / 12** ▓▓▓▓▓▓▓▓▓▓▓░ 92 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -24,7 +24,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 7 | Jeu de test annoté & évaluation | `data/qa_test.json`, `src/evaluate.py` | ✅ Fait |
 | 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ✅ Fait |
 | 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ✅ Fait |
-| 10 | Présentation (10–15 slides) | `livrables/presentation.pptx` | ⬜ À faire |
+| 10 | Présentation (10–15 slides) | `livrables/presentation.pptx` | ✅ Fait |
 | 11 | README final & packaging des livrables | zip de dépôt OpenClassrooms | ⬜ À faire |
 
 **Légende :** ✅ Fait · 🟡 En cours · ⬜ À faire
@@ -126,7 +126,9 @@ cp .env.example .env
 │   └── tests.yml        # pipeline CI : pytest à chaque push
 ├── livrables/
 │   ├── rapport_technique.md   # rapport technique, source Markdown
-│   └── rapport_technique.pdf  # rapport technique, 9 pages
+│   ├── rapport_technique.pdf  # rapport technique, 9 pages
+│   ├── presentation.pptx      # présentation de soutenance, 12 slides
+│   └── generer_presentation.py  # régénère la présentation (python-pptx)
 └── data/
     ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues
     ├── evaluation.csv   # résultats de la dernière évaluation, question par question
