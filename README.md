@@ -10,7 +10,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 
 ## 📊 Où en est le projet ?
 
-**Avancement : 11 / 12** ▓▓▓▓▓▓▓▓▓▓▓░ 92 %
+**Avancement : 12 / 12** ▓▓▓▓▓▓▓▓▓▓▓▓ 100 %
 
 | # | Étape | Ce qui est produit | Statut |
 | :-: | --- | --- | :-: |
@@ -25,7 +25,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms — [énoncé complet](consig
 | 8 | Démo live (chatbot en ligne de commande) | `src/chat.py` | ✅ Fait |
 | 9 | Rapport technique (5–10 pages) | `livrables/rapport_technique.pdf` | ✅ Fait |
 | 10 | Présentation (10–15 slides) | `livrables/presentation.pptx` | ✅ Fait |
-| 11 | README final & packaging des livrables | zip de dépôt OpenClassrooms | ⬜ À faire |
+| 11 | README final & packaging des livrables | zip de dépôt OpenClassrooms | ✅ Fait |
 
 **Légende :** ✅ Fait · 🟡 En cours · ⬜ À faire
 
@@ -98,11 +98,32 @@ Puis copier `.env.example` en `.env` et y renseigner la clé OpenRouter :
 cp .env.example .env
 ```
 
+Les données et l'index ne sont pas versionnés : on les reconstruit, depuis la racine du dépôt, dans
+l'ordre (quelques minutes, environ 0,10 $ d'appels d'embeddings) :
+
+```bash
+python src/extract.py       # API OpenAgenda -> data/raw/
+python src/preprocess.py    # nettoyage -> data/processed/
+python src/build_index.py   # chunks + embeddings Mistral -> data/faiss_index/
+pytest                      # contrôles de qualité sur le dataset produit
+```
+
+`preprocess.py` affiche en fin d'exécution le nombre d'évènements en entrée, ceux écartés par chaque
+règle de nettoyage et le nombre en sortie.
+
+Le système est alors prêt :
+
+```bash
+python src/chat.py          # démo : chatbot en ligne de commande
+python src/evaluate.py      # score sur le jeu de test annoté
+```
+
+Le nombre d'évènements varie selon le jour de l'extraction : les chiffres de ce README sont ceux de
+l'extraction du 25 septembre 2026.
+
 ---
 
 ## 📁 Structure des fichiers
-
-> Cette section sera complétée au fil des étapes.
 
 ```
 .
@@ -128,25 +149,14 @@ cp .env.example .env
 │   ├── rapport_technique.md   # rapport technique, source Markdown
 │   ├── rapport_technique.pdf  # rapport technique, 9 pages
 │   ├── presentation.pptx      # présentation de soutenance, 12 slides
-│   └── generer_presentation.py  # régénère la présentation (python-pptx)
+│   └── generer_presentation.py  # régénère la présentation (pip install python-pptx)
 └── data/
     ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues
     ├── evaluation.csv   # résultats de la dernière évaluation, question par question
-    ├── raw/             # non versionné, reconstruit par les scripts : réponses brutes de l'API
-    ├── processed/       # dataset propre, prêt à indexer
-    └── faiss_index/     # index vectoriel (index.faiss + métadonnées)
+    ├── raw/             # réponses brutes de l'API          ┐
+    ├── processed/       # dataset propre, prêt à indexer     ├ non versionnés,
+    └── faiss_index/     # index vectoriel + métadonnées      ┘ reconstruits par les scripts
 ```
-
-Les trois scripts se lancent depuis la racine du dépôt, dans l'ordre :
-
-```bash
-python src/extract.py
-python src/preprocess.py
-python src/build_index.py
-```
-
-`preprocess.py` affiche en fin d'exécution le nombre d'évènements en entrée, ceux écartés par chaque
-règle de nettoyage et le nombre en sortie.
 
 ---
 
@@ -310,12 +320,12 @@ push — il vérifie donc aussi que l'environnement se réinstalle proprement su
 
 Dépôt attendu : un zip `Concevez_et_deployez_un_systeme_RAG_zinzen_mathieu` contenant :
 
-| N° | Fichier | Statut |
-| :-: | --- | :-: |
-| 1 | `Zinzen_Mathieu_1_readme_092026` | ⬜ |
-| 2 | `Zinzen_Mathieu_2_gestion_092026` | ⬜ |
-| 3 | `Zinzen_Mathieu_3_scripts_092026` | ⬜ |
-| 4 | `Zinzen_Mathieu_4_tests_092026` | ⬜ |
-| 5 | `Zinzen_Mathieu_5_rag_092026` | ⬜ |
-| 6 | `Zinzen_Mathieu_6_rapport_092026` | ⬜ |
-| 7 | `Zinzen_Mathieu_7_presentation_092026` | ⬜ |
+| N° | Livrable | Contenu |
+| :-: | --- | --- |
+| 1 | `Zinzen_Mathieu_1_readme_092026.md` | ce README |
+| 2 | `Zinzen_Mathieu_2_gestion_092026.txt` | `requirements.txt` |
+| 3 | `Zinzen_Mathieu_3_scripts_092026/` | `extract.py`, `preprocess.py`, `build_index.py` |
+| 4 | `Zinzen_Mathieu_4_tests_092026/` | `test_data_quality.py`, `pytest.ini`, `tests.yml` |
+| 5 | `Zinzen_Mathieu_5_rag_092026/` | `rag.py`, `chat.py`, `evaluate.py`, `qa_test.json`, `evaluation.csv` |
+| 6 | `Zinzen_Mathieu_6_rapport_092026.pdf` | rapport technique |
+| 7 | `Zinzen_Mathieu_7_presentation_092026.pptx` | présentation de soutenance |
