@@ -70,7 +70,8 @@ Contraintes imposées par l'énoncé :
 | Orchestration RAG | LangChain | Imposé |
 | Tests | pytest + GitHub Actions | Tests « intégrés sous forme de pipeline » |
 
-Rien d'autre : ni API web, ni Docker, ni interface graphique — l'énoncé ne les demande pas.
+Rien d'autre dans la version déposée : ni API web, ni Docker, ni interface graphique — l'énoncé ne
+les demande pas. La V2 ajoute une API et une interface web, et seulement elles (voir plus bas).
 
 > **Note sur l'accès aux modèles.** Les modèles utilisés sont bien ceux de Mistral, comme l'impose
 > l'énoncé, mais ils sont appelés via OpenRouter plutôt que par une clé Mistral directe. OpenRouter
@@ -140,8 +141,13 @@ l'extraction du 25 septembre 2026.
 │   ├── rag.py           # chaîne RAG : recherche Faiss + réponse Mistral
 │   ├── chat.py          # démo live : chatbot en ligne de commande
 │   └── evaluate.py      # évaluation sur le jeu de test annoté (juge Mistral)
+├── api/
+│   └── main.py          # V2 : API FastAPI, réponse en flux SSE avec sources et citations
+├── web/                 # V2 : interface Next.js (app/, components/, lib/, tests/)
+├── demo.ps1             # V2 : lance l'API puis l'interface web
 ├── tests/
-│   └── test_data_quality.py  # contrôles de qualité du dataset
+│   ├── test_data_quality.py  # contrôles de qualité du dataset
+│   └── test_api.py      # V2 : contrôles de l'API, sans réseau
 ├── pytest.ini           # rend src/ importable par les tests
 ├── .github/workflows/
 │   └── tests.yml        # pipeline CI : pytest à chaque push
@@ -313,6 +319,52 @@ quatre tests sont marqués « skipped » plutôt que faussement verts.
 
 Le pipeline `.github/workflows/tests.yml` installe `requirements.txt` et lance `pytest` à chaque
 push — il vérifie donc aussi que l'environnement se réinstalle proprement sur une machine neuve.
+
+---
+
+## 🌐 V2 : l'application web
+
+La version déposée le 25 septembre 2026 est figée sous le tag `depot-openclassrooms-2026-09-25`. La
+V2 habille la même chaîne RAG d'une application web, sans changer ce qu'elle cherche ni comment elle
+répond : `src/chat.py` et `src/evaluate.py` marchent toujours. Ce qui est ajouté, et pourquoi, est
+listé en section 8 de [consigne.md](consigne.md).
+
+```
+navigateur ──▶ web/ (Next.js, :3000) ──/api/*──▶ api/ (FastAPI, :8000) ──▶ src/rag.py ──▶ Faiss + Mistral
+```
+
+| Brique | Ce qu'elle fait |
+| --- | --- |
+| `src/rag.py` | numérote les évènements du contexte `[1]`, `[2]`… et demande au modèle de les citer par ce numéro |
+| `api/main.py` | `POST /api/chat` en flux SSE : les sources dès que Faiss a répondu, puis le texte au fil de l'eau, puis les citations vérifiées (un `[n]` sans évènement est signalé). `GET /api/evenements/{uid}`, `GET /api/sante` |
+| `web/` | Next.js 15, React 19, TypeScript. Chat en streaming, citations cliquables qui mènent à la carte de l'évènement, cartes avec image, dates, lieu et lien OpenAgenda. Mobile d'abord, mode sombre |
+
+Pas d'historique envoyé au modèle, comme dans le POC : les échanges restent affichés, mais chaque
+question part seule. Une erreur 429 d'OpenRouter est retentée par l'API, et l'interface affiche
+« le service Mistral est saturé, nouvel essai… » au lieu de planter.
+
+**Lancer la démo** (Windows, depuis la racine du dépôt, index déjà construit) :
+
+```bash
+cd web && npm install && cd ..
+```
+
+```bash
+powershell -File demo.ps1
+```
+
+`demo.ps1` ouvre l'API dans sa propre fenêtre puis l'interface ; ouvrir http://127.0.0.1:3000. À la
+main, deux terminaux : `python -m uvicorn main:app --app-dir api --port 8000` à la racine, et
+`npm run dev` dans `web/`.
+
+**Tests.** `pytest` couvre aussi l'API (`tests/test_api.py`) sans réseau : l'index et le modèle Mistral
+sont remplacés par des faux, ce qui permet à la CI de vérifier l'ordre du flux, les citations et les
+nouveaux essais sur 429. Côté web, `npm test` dans `web/` vérifie la lecture du flux SSE et le
+relevé des citations ; la CI lance aussi `npm run build`.
+
+> L'extraction du 25/09/2026 est conservée, mais `preprocess.py` relancé le 23/10/2026 écarte
+> 178 évènements de plus, qui ont maintenant commencé il y a plus d'un an : **2 120 évènements**.
+> Les 20 évènements du jeu de test sont tous encore là.
 
 ---
 
