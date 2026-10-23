@@ -378,3 +378,19 @@ Liste de contrôle extraite mot pour mot de l'énoncé. **Rien d'autre ne doit �
 **Technologies imposées :** Python 3, environnement virtuel, LangChain, Faiss (`faiss-cpu`), API Mistral, API OpenAgenda, Pandas.
 
 **Non demandé par l'énoncé** — donc hors périmètre : API web (FastAPI/Flask), conteneurisation (Docker), interface web, base de données relationnelle, historique de conversation, déploiement cloud.
+
+---
+
+## 8. Au-delà du POC
+
+La version déposée le 25/09/2026 est figée sous le tag `depot-openclassrooms-2026-09-25` et respecte
+la liste ci-dessus. La V2 ajoute deux choses, et seulement deux, que l'énoncé place hors périmètre :
+
+| Ajout | Ce que c'est | Pourquoi |
+| --- | --- | --- |
+| `api/` | une API FastAPI qui expose la chaîne de `src/rag.py` | le navigateur ne peut pas importer du Python : l'API diffuse la réponse au fil de l'eau (SSE), avec ses sources et ses citations |
+| `web/` | une interface Next.js (chat, cartes d'évènements, citations cliquables) | montrer le POC à des utilisateurs de Puls-Events, y compris sur téléphone, plutôt qu'en ligne de commande |
+
+La chaîne imposée ne change pas : LangChain, Faiss, embeddings et génération Mistral, pandas,
+OpenAgenda. `src/chat.py` reste la démo live demandée par l'énoncé, et `src/evaluate.py` la mesure de
+qualité.
