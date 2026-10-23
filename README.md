@@ -339,6 +339,13 @@ navigateur ──▶ web/ (Next.js, :3000) ──/api/*──▶ api/ (FastAPI, 
 | `api/main.py` | `POST /api/chat` en flux SSE : les sources dès que Faiss a répondu, puis le texte au fil de l'eau, puis les citations vérifiées (un `[n]` sans évènement est signalé). `GET /api/evenements/{uid}`, `GET /api/sante` |
 | `web/` | Next.js 15, React 19, TypeScript. Chat en streaming, citations cliquables qui mènent à la carte de l'évènement, cartes avec image, dates, lieu et lien OpenAgenda. Mobile d'abord, mode sombre |
 
+![Réponse à « Quelles pièces de Shakespeare sont jouées ? » : citations en pastilles et cartes des évènements cités](livrables/captures/reponse-shakespeare.jpg)
+
+Les cinq questions de la démo passent dans le navigateur avec les mêmes évènements que
+`src/chat.py` (23/10/2026). Les sources arrivent en une demi-seconde, avant le texte (environ 3 s
+pour le premier mot, 5 s pour la réponse entière). Autres captures dans `livrables/captures/` :
+accueil en mode sombre, sources affichées pendant la rédaction, réponse sur téléphone (375 px).
+
 Pas d'historique envoyé au modèle, comme dans le POC : les échanges restent affichés, mais chaque
 question part seule. Une erreur 429 d'OpenRouter est retentée par l'API, et l'interface affiche
 « le service Mistral est saturé, nouvel essai… » au lieu de planter.
@@ -363,8 +370,8 @@ nouveaux essais sur 429. Côté web, `npm test` dans `web/` vérifie la lecture 
 relevé des citations ; la CI lance aussi `npm run build`.
 
 > L'extraction du 25/09/2026 est conservée, mais `preprocess.py` relancé le 23/10/2026 écarte
-> 178 évènements de plus, qui ont maintenant commencé il y a plus d'un an : **2 120 évènements**.
-> Les 20 évènements du jeu de test sont tous encore là.
+> 178 évènements de plus, qui ont maintenant commencé il y a plus d'un an : **2 120 évènements,
+> 3 558 vecteurs**. Les 20 évènements du jeu de test sont tous encore là.
 
 ---
 
