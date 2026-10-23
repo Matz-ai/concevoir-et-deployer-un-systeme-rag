@@ -12,7 +12,7 @@ SORTIE = Path("data/processed/evenements_93.csv")
 DEPARTEMENT = "Seine-Saint-Denis"
 DESCRIPTION_MINI = 30  # en deçà, la description ne fait que répéter le titre
 
-COLONNES = {  # les 12 champs retenus sur les 56 de la source, et leur nom en sortie
+COLONNES = {  # les 15 champs retenus sur les 56 de la source, et leur nom en sortie
     "uid": "uid",
     "title_fr": "titre",
     "description": "description",
@@ -25,6 +25,9 @@ COLONNES = {  # les 12 champs retenus sur les 56 de la source, et leur nom en so
     "location_city": "ville",
     "location_department": "departement",
     "canonicalurl": "lien",
+    "thumbnail": "image",  # miniature affichée sur la carte de l'évènement
+    "age_min": "age_min",
+    "age_max": "age_max",
 }
 
 
@@ -79,8 +82,10 @@ def nettoyer(bruts):
     df = df.assign(description=df.apply(meilleure_description, axis=1))
     garder(df["description"].str.len() >= DESCRIPTION_MINI, "description inexploitable")
 
-    df = df.assign(keywords_fr=df["keywords_fr"].map(lambda m: ", ".join(m) if isinstance(m, list) else ""))
-    return df[list(COLONNES)].rename(columns=COLONNES), journal
+    df = df.assign(keywords_fr=df["keywords_fr"].map(lambda m: ", ".join(m) if isinstance(m, list) else ""),
+                   latitude=df["location_coordinates"].map(lambda c: c["lat"]),
+                   longitude=df["location_coordinates"].map(lambda c: c["lon"]))
+    return df[[*COLONNES, "latitude", "longitude"]].rename(columns=COLONNES), journal
 
 
 if __name__ == "__main__":

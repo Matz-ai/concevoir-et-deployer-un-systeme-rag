@@ -24,8 +24,12 @@ def evenement(**champs):
         "location_address": "1 rue Gaston Roulaud 93000 Bobigny",
         "location_city": "Bobigny",
         "location_department": DEPARTEMENT,
+        "location_coordinates": {"lon": 2.4397, "lat": 48.9066},
         "status": PROGRAMME,
         "canonicalurl": "https://openagenda.com/evenement",
+        "thumbnail": "https://cdn.openagenda.com/main/concert.thumb.image.jpg",
+        "age_min": None,
+        "age_max": None,
     } | champs
 
 
