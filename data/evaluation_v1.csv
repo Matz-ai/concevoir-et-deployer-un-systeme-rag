@@ -1,0 +1,121 @@
+question,type,recherche,correct,justification,reponse
+Quels concerts de jazz sont prévus en Seine-S,thème,0/2,False,"La réponse de l'assistant est fausse car elle affirme qu'il n'y a aucun concert de jazz prévu, alors que deux événements sont attendus selon la réponse de référence.","D'après les événements listés, je ne vois aucun concert de jazz prévu en Seine-Saint-Denis."
+Où écouter du jazz ?,thème,0/2,False,La réponse de l'assistant ne mentionne aucun des deux événements attendus (A Drop of Poison ou SOLANGE : Alone Together !) ni leurs dates ou lieux associés.,"Voici un événement en Seine-Saint-Denis où vous pourrez écouter du jazz :
+
+**LES COULEURS DU SON : Naïssam Jalal ""Shining Legacy""**
+Dimanche 13 décembre 2026, 20h00
+Conservatoire de musique et de danse Joséphine-Baker du Pré, Le Pré-Saint-Gervais [3]"
+Je cherche un concert de blues.,thème,1/2,False,"La réponse de l'assistant ne mentionne pas le concert *A Drop of Poison* prévu le 6 novembre 2026 à Bondy, qui fait partie de la réponse attendue.","Voici les concerts de blues disponibles en Seine-Saint-Denis :
+
+- **CHICAGO BLUES**
+  Samedi 5 décembre 2026, 20h30
+  L'Odéon, Tremblay-en-France [1]
+
+- **JOVIN WEBB + LILA MAY**
+  Samedi 17 octobre 2026, 20h30
+  L'Odéon, Tremblay-en-France [2]"
+Y a-t-il des spectacles de marionnettes ?,thème,1/3,True,"La réponse de l'assistant contient bien l'événement *A Moi!* avec les mêmes dates et lieu que la réponse attendue, même si elle n'inclut pas les autres spectacles.","Oui, voici un spectacle de marionnettes :
+
+**A Moi!**
+Salle Pablo Neruda, Bobigny
+17 - 20 novembre [6]"
+Quelles pièces de Shakespeare sont jouées ?,thème,2/2,True,"La réponse de l'assistant contient bien les deux pièces attendues (*Macbeth* et *Le Conte d'hiver*) avec leurs dates et lieux exacts, sans inclure *Macbett* (Ionesco).","Voici les pièces de Shakespeare jouées en Seine-Saint-Denis parmi les événements proposés :
+
+- **Macbeth** (d'après W. Shakespeare)
+  *Dates : 7-8 octobre et 14-15 novembre 2026*
+  *Lieu : Espace Albatros* [1]
+
+- **Le Conte d'hiver** (de Shakespeare)
+  *Date : 29 janvier 2027 (14h30 et 20h30)*
+  *Lieu : Théâtre et cinéma Georges Simenon, Rosny-sous-Bois* [7]"
+Une exposition photo sur l'immigration ?,thème,1/1,True,"La réponse de l'assistant contient toutes les informations attendues (photographe Bouba Touré, thème de l'immigration africaine, dates et lieu identiques) sans erreur ni omission.","Voici une exposition qui correspond à votre demande sur le thème de l'immigration :
+
+**Exposition : Les Archives départementales de la Seine-Saint-Denis proposent une exposition réalisée à partir du fonds photographique Bouba Touré**
+- **Date** : 1 février - 30 septembre 2027
+- **Lieu** : Archives départementales de la Seine-Saint-Denis, Bobigny
+[4]"
+Un spectacle qui parle de piscine ou de natat,thème,1/1,True,"La réponse de l'assistant contient les mêmes informations essentielles (titre, dates et lieu) que la réponse attendue, sans erreur ni omission.","Voici un événement qui correspond à votre demande :
+
+**La ligne de nage**
+11 et 12 mars 2027
+Les 3T - Théâtre du Troisième Type, Saint-Denis [1]"
+Où participer à une récolte d'olives ?,thème,2/2,True,"La réponse de l'assistant contient toutes les informations attendues (événement, dates, lieu de lancement) sans erreur, tout en ajoutant des précisions supplémentaires.","Voici les événements liés à la récolte d'olives en Seine-Saint-Denis :
+
+- **Récolte oléicole en Seine-Saint-Denis**
+  Du 31 octobre au 21 novembre 2026, dans toutes les communes de Seine-Saint-Denis [1]
+
+- **Lancement de la récolte oléicole 2026**
+  Samedi 31 octobre à 11h00, à la Maison de quartier Floréal - La Saussaie - La Courtille, Saint-Denis [2]"
+"Qu'est-ce qui est programmé au Triton, aux Li",lieu,0/1,False,La réponse de l'assistant mentionne un événement différent (*Constellation quartet* au lieu de *Alone Together ! piano solo*) et une date erronée (26 septembre 2026 au lieu de 27 février 2027).,"Voici l'événement programmé au Triton, aux Lilas :
+
+**SOLANGE : Constellation quartet**
+Jazz, musique contemporaine, groove, quartet, électronique
+📅 Samedi 26 septembre, 20h30
+📍 Le Triton, Les Lilas
+[3]"
+Que voir à l'Odéon de Tremblay-en-France en d,lieu,1/1,True,"La réponse contient bien l'événement attendu (*Chicago Blues*), la date (5 décembre) et l'horaire (20h30) sans erreur, avec des détails supplémentaires non pénalisants.","Voici l'événement à l'Odéon de Tremblay-en-France en décembre :
+
+**CHICAGO BLUES**
+BLUES, CONCERT
+Samedi 5 décembre, 20h30
+📍 L'Odéon, Tremblay-en-France
+[3]"
+Quels évènements à Clichy-sous-Bois ?,lieu,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'aucun événement n'existe, alors qu'un événement spécifique est mentionné.",Aucun évènement ne correspond à Clichy-sous-Bois dans la liste fournie.
+Quelles expositions au musée Paul-Éluard de S,lieu,2/2,False,"La réponse de l'assistant omet l'exposition *""Dans l'ombre des regards""* de Jacqueline Salmon, qui fait partie des informations attendues.","Voici les expositions prévues au **Musée d'art et d'histoire Paul Eluard** à Saint-Denis en 2026-2027 :
+
+- **Florilège — Exposition**
+  *26 avril - 6 juin 2027*
+  Musée d'art et d'histoire Paul Eluard, Saint-Denis [2]"
+Que se passe-t-il à Montfermeil ?,lieu,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'il n'y a aucun événement, alors qu'un spectacle est prévu.",Je n'ai aucun évènement prévu à Montfermeil dans la liste fournie.
+Que faire le 21 juin 2027 ?,date,1/1,True,"La réponse de l'assistant contient toutes les informations attendues (événement, date, heure et lieu) sans erreur, tout en ajoutant des précisions non contradictoires.","Voici l'événement qui correspond à ta recherche pour le **21 juin 2027** en Seine-Saint-Denis :
+
+**Faites de la musique !**
+Fête de la musique
+**Lundi 21 juin 2027, 18h00**
+Parc François Mitterrand, Bondy
+[1]"
+Quel spectacle voir le 1er décembre 2026 ?,date,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'aucun événement n'a lieu le 1er décembre 2026, alors qu'un spectacle est bien prévu.",Aucun évènement ne correspond à cette date dans la liste fournie.
+Quel concert le 13 décembre 2026 ?,date,0/1,False,"La réponse de l'assistant contredit la réponse attendue en affirmant qu'aucun événement n'a lieu, alors qu'un concert est bien prévu à cette date.",Aucun évènement ne correspond à cette date dans les propositions disponibles.
+Quels spectacles le week-end du 28-29 novembr,date,0/2,False,La réponse de l'assistant ne mentionne aucun des deux spectacles attendus (*Le Banquet* et *Des luttes et des rêves*) et propose un événement différent (*Blues en Seine-Saint-Denis*) sans lien avec la demande.,"Voici l'événement correspondant au week-end du **28-29 novembre 2026** en Seine-Saint-Denis :
+
+**Blues en Seine-Saint-Denis** – *Tournée de concerts de blues*
+Du **7 novembre au 15 décembre 2026** (dates précises à vérifier selon les lieux de tournée)
+*Line up : Zac Harmon, Kingston Livingston, Lady Adrena, etc.*
+**[4]**"
+Y a-t-il un match du PSG au Parc des Princes ,hors corpus,-,True,"La réponse de l'assistant a le même sens que la réponse attendue, confirmant l'absence de match du PSG au Parc des Princes.",Aucun évènement correspondant à un match du PSG au Parc des Princes n'est listé dans les données fournies.
+Un concert de Beyoncé au Stade de France ?,hors corpus,-,True,"La réponse de l'assistant a le même sens que la réponse attendue, confirmant l'absence de concert de Beyoncé sans erreur ni omission.",Aucun évènement correspondant à un concert de Beyoncé au Stade de France n'est listé dans les propositions disponibles.
+Quel temps fera-t-il demain à Bobigny ?,hors corpus,-,True,"La réponse de l'assistant indique clairement qu'il ne peut pas répondre à la question sur la météo, tout en restant dans son domaine de compétence (événements culturels), sans erreur ni omission sur le message principal.","Je ne peux pas répondre à cette question, car je ne dispose que d'informations sur les événements culturels en Seine-Saint-Denis. Voici cependant un événement qui a lieu bientôt à Bobigny :
+
+**À l’occasion de la 3e édition de Biblis en folie**
+Samedi 3 octobre 2026, 15h00
+Médiathèque Paul Eluard, Aubervilliers [7]"
+Un truc sympa à faire ?,précision,-,False,"La réponse de l'assistant ne respecte pas la consigne attendue, qui était de demander une précision plutôt que de proposer des événements directement.","Voici quelques événements sympas en Seine-Saint-Denis pour les prochains jours :
+
+1. **Dans mon quartier il y a une médiathèque et...**
+   *Samedi 3 octobre, 15h00 – Médiathèque Paul Eluard, Aubervilliers* [1]
+   Un atelier créatif pour imaginer son quartier idéal, à partir de 7 ans.
+
+2. **Cluedo géant : L'espion qui en savait trop**
+   *Samedi 3 octobre, 16h00 – Médiathèque municipale, Romainville* [3]
+   Une enquête-spectacle à résoudre en famille ou entre amis, dès 8 ans.
+
+3. **Chut !**
+   *Dimanche 4 octobre, 16h00 – Médiathèque Persepolis, Saint-Ouen* [8]
+   Un spectacle inspiré d’un album jeunesse, à partir de 3 ans (sur réservation).
+
+Si tu cherches quelque chose de précis (famille, enfants, adultes, etc.), fais-le-moi savoir !"
+Qu'est-ce que vous me conseillez ?,précision,-,False,"La réponse de l'assistant ne correspond pas à la réponse attendue, car elle propose directement des événements au lieu de demander une précision sur les préférences de l'utilisateur.","Voici quelques événements qui pourraient vous intéresser en Seine-Saint-Denis pour les prochains jours :
+
+1. **WORKSHOP : décrochez vos premiers marchés publics**
+   Mardi 29 septembre 2026, 18h30 – 20h30
+   Au ME : 5-7 rue Paul Bert, 93400 Saint-Ouen [4]
+
+2. **Dans mon quartier il y a une médiathèque et...**
+   Samedi 3 octobre 2026, 15h00
+   Médiathèque Paul Eluard, Aubervilliers [1]
+
+3. **Atelier d'écriture « Rédigez votre autobiographie »**
+   Samedi 3 octobre 2026, 10h00
+   Maison du temps libre, Vaujours [7]
+
+Si aucun de ces événements ne correspond à vos attentes, n'hésitez pas à préciser votre recherche !"
