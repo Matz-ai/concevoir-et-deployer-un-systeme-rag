@@ -16,6 +16,7 @@ while True:
     print("\n" + resultat["reponse"] + "\n")
     # les sources prouvent que la réponse vient de l'index et non de la mémoire du modèle
     print("Évènements utilisés :")
-    for d in {d.metadata["uid"]: d for d in resultat["documents"]}.values():  # un évènement long = plusieurs chunks
-        print("  -", d.metadata["titre"], "|", d.metadata["dates_texte"], "|", d.metadata["lieu"], "|", d.metadata["ville"])
+    # un évènement long = plusieurs chunks ; numérotés comme dans le contexte, donc comme les [n] de la réponse
+    for n, d in enumerate({d.metadata["uid"]: d for d in resultat["documents"]}.values(), 1):
+        print(f"  [{n}]", d.metadata["titre"], "|", d.metadata["dates_texte"], "|", d.metadata["lieu"], "|", d.metadata["ville"])
     print()

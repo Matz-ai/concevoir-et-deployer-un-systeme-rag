@@ -14,3 +14,7 @@ requests==2.34.2
 # Configuration et tests
 python-dotenv==1.2.3
 pytest==9.1.1
+
+# V2 : API web (hors enonce, cf. consigne.md section 8)
+fastapi==0.161.1
+uvicorn==0.54.0
