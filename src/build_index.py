@@ -17,7 +17,8 @@ TAILLE_CHUNK = 1000  # caractères : 74 % des évènements tiennent en un seul c
 RECOUVREMENT = 100
 LOT = 50  # textes envoyés par appel à l'API
 
-METADONNEES = ["uid", "titre", "description", "date_debut", "date_fin", "dates_texte", "lieu", "ville", "lien"]
+METADONNEES = ["uid", "titre", "description", "date_debut", "date_fin", "dates_texte", "lieu", "ville", "lien",
+               "image", "latitude", "longitude", "age_min", "age_max"]  # les cinq derniers servent à l'affichage web
 
 
 def en_documents(evenements):

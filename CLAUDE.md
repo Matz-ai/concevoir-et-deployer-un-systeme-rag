@@ -64,9 +64,12 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 **`consigne.md` is the contract. Nothing else gets built.**
 
-- Every file in this repo must map to a line in the checklist of `consigne.md` (section 7).
-- If it is not in the brief, do not build it: no web API, no Docker, no GUI, no conversation history,
-  no cloud deployment. The brief lists them as out of scope.
+- Every file in this repo must map to a line in the checklist of `consigne.md` (section 7), or to an
+  addition listed in section 8 (« Au-delà du POC »).
+- The V2 adds exactly two things beyond the brief: `api/` (FastAPI, exposes `src/rag.py` to the
+  browser) and `web/` (Next.js interface). Nothing else: no Docker, no database, no conversation
+  history sent to the model, no cloud deployment.
+- The deposited version is frozen under the tag `depot-openclassrooms-2026-09-25`.
 - Answer the question that was asked. Not the adjacent one, not the one you would have preferred.
 - The technologies are imposed (Python 3, venv, pandas, OpenAgenda API, Mistral API, Faiss, LangChain).
   Do not substitute a "better" library.
