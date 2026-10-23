@@ -161,3 +161,11 @@ def test_la_recherche_hybride_trouve_un_mot_exact_et_respecte_les_filtres(monkey
     trouves = rag.chercher({"question": "shakespeare", "filtres": rag.Filtres()})
     assert trouves[0].metadata["titre"] == "Le Conte d'hiver"  # le faux vectoriseur classe au hasard, BM25 non
     assert rag.chercher({"question": "shakespeare", "filtres": rag.Filtres(ville="Bobigny")}) == []
+
+
+def test_une_saturation_a_la_lecture_des_filtres_est_lisible(client, monkeypatch):
+    async def saturee(question):
+        raise RateLimitError("429", response=httpx.Response(429, request=httpx.Request("POST", "https://x")), body=None)
+    monkeypatch.setattr(rag, "lecteur", RunnableLambda(saturee))
+    flux = evenements(client.post("/api/chat", json={"question": "Du jazz ?"}))
+    assert flux == [("erreur", {"message": "Le service Mistral est saturé, réessayez dans un instant.", "reessai": False})]

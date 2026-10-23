@@ -13,7 +13,11 @@ const ETIQUETTES: Record<keyof Filtres, string> = {
 };
 
 /** Les filtres lus dans la question : retirer ou corriger une puce relance la question avec ces filtres. */
-export default function PucesFiltres({ filtres, relancer }: { filtres: Filtres; relancer: (f: Filtres) => void }) {
+export default function PucesFiltres({ filtres, relancer, occupe }: {
+  filtres: Filtres;
+  relancer: (f: Filtres) => void;
+  occupe: boolean;
+}) {
   const [edition, setEdition] = useState<Puce | null>(null);
   const liste = puces(filtres);
   if (liste.length === 0) return null;
@@ -54,14 +58,21 @@ export default function PucesFiltres({ filtres, relancer }: { filtres: Filtres; 
                 />
               </label>
             ))}
-            <button type="submit">Relancer</button>
+            <button type="submit" disabled={occupe}>
+              Relancer
+            </button>
           </form>
         ) : (
           <span key={puce} className="puce">
-            <button type="button" onClick={() => setEdition(puce)} title="Corriger ce filtre">
+            <button type="button" onClick={() => setEdition(puce)} title="Corriger ce filtre" disabled={occupe}>
               {texte}
             </button>
-            <button type="button" onClick={() => relancer(sans(filtres, puce))} aria-label={`Retirer ${texte}`}>
+            <button
+              type="button"
+              onClick={() => relancer(sans(filtres, puce))}
+              aria-label={`Retirer ${texte}`}
+              disabled={occupe}
+            >
               ×
             </button>
           </span>

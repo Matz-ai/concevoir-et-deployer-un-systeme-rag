@@ -79,7 +79,7 @@ export default function Accueil() {
         </div>
       ) : (
         <div className="fil">
-          {echanges.map((e, i) => <Echange key={i} echange={e} rang={i} poser={envoyer} />)}
+          {echanges.map((e, i) => <Echange key={i} echange={e} rang={i} poser={envoyer} occupe={enCours} />)}
         </div>
       )}
 

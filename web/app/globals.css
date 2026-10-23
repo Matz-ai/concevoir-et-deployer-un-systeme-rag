@@ -468,8 +468,14 @@ h4,
   color: var(--encre-3);
 }
 
-.puce button:hover {
+span.puce button:hover:enabled {
   color: var(--accent);
+}
+
+.puce button:disabled,
+.pistes button:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .puce--edition {

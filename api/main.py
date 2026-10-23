@@ -101,6 +101,8 @@ async def sans_plantage(flux):
     try:
         async for evenement in flux:
             yield evenement
+    except RateLimitError:  # la lecture des filtres a épuisé les nouveaux essais du client OpenAI
+        yield sse("erreur", {"message": "Le service Mistral est saturé, réessayez dans un instant.", "reessai": False})
     except Exception as e:  # clé refusée, réseau coupé : le navigateur doit lire une erreur, pas un flux coupé net
         yield sse("erreur", {"message": f"La réponse a échoué ({type(e).__name__}).", "reessai": False})
 

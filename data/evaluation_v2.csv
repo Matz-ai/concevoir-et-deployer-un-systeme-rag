@@ -1,0 +1,136 @@
+question,type,recherche,correct,justification,reponse
+Quels concerts de jazz sont prévus en Seine-S,thème,2/2,False,La réponse de l'assistant mentionne un concert de SOLANGE différent de celui attendu (*Constellation quartet* au lieu de *Alone Together ! piano solo* avec une date erronée) et omet la date exacte du 27 février 2027 pour ce dernier.,"Voici les concerts de jazz prévus en Seine-Saint-Denis à partir des événements disponibles :
+
+- **SOLANGE : Constellation quartet**
+  Samedi 26 septembre, 20h30
+  Le Triton, Les Lilas [3]
+
+- **A DROP OF POISON**
+  Vendredi 6 novembre, 20h30
+  Auditorium Angèle et Roger Tribouilloy, Bondy [7]
+
+*(Note : ""ORCHESTRA BAOBAB"" [9] inclut des influences jazz, mais il s'agit avant tout d'un mélange afro-latin.)*"
+Où écouter du jazz ?,thème,2/2,False,La réponse de l'assistant mentionne un événement différent (*SOLANGE : Constellation quartet* au lieu de *SOLANGE : Alone Together ! piano solo*) et omet la date du 27 février 2027 pour le second événement attendu.,"Voici les évènements où écouter du jazz en Seine-Saint-Denis :
+
+- **SOLANGE : Constellation quartet** - Samedi 26 septembre, 20h30 au **Le Triton, Les Lilas** [4]
+- **A DROP OF POISON** - Vendredi 6 novembre, 20h30 à l'**Auditorium Angèle et Roger Tribouilloy, Bondy** [8] *(mélange jazz, blues et rock)*"
+Je cherche un concert de blues.,thème,2/2,True,"La réponse de l'assistant contient bien les deux événements attendus (*Chicago Blues* et *A Drop of Poison*) avec leurs dates et lieux exacts, malgré l'ajout d'un troisième concert non mentionné dans la réponse attendue.","Voici les concerts de blues disponibles en Seine-Saint-Denis :
+
+- **JOVIN WEBB + LILA MAY**
+  Samedi 17 octobre 2026, 20h30
+  L'Odéon, Tremblay-en-France [2]
+
+- **A DROP OF POISON** (inclut du blues dans son répertoire)
+  Vendredi 6 novembre 2026, 20h30
+  Auditorium Angèle et Roger Tribouilloy, Bondy [4]
+
+- **CHICAGO BLUES**
+  Samedi 5 décembre 2026, 20h30
+  L'Odéon, Tremblay-en-France [1]"
+Y a-t-il des spectacles de marionnettes ?,thème,3/3,True,"La réponse contient tous les événements attendus (A Moi!, Okilélé, Juste Irena) avec leurs dates et lieux exacts, malgré l'ajout d'un spectacle supplémentaire (Nuée).","Oui, voici les spectacles de marionnettes disponibles en Seine-Saint-Denis :
+
+- **A Moi!**
+  Du 17 au 20 novembre 2026 à la Salle Pablo Neruda, Bobigny [2]
+
+- **Nuée**
+  Dimanche 27 septembre 2026 à 11h15 à l'Espace Michel Simon, Noisy-le-Grand [7]
+
+- **Okilélé**
+  Du 27 au 30 janvier 2027 à la MC93 - Maison de la Culture de Seine-Saint-Denis, Bobigny [5]
+
+- **Juste Irena**
+  Mardi 4 mai 2027 à 10h00 et 14h30 au Conservatoire Gilbert Klein (espace 93), Clichy-sous-Bois [3]"
+Quelles pièces de Shakespeare sont jouées ?,thème,2/2,True,"La réponse contient bien les deux pièces attendues (*Macbeth* et *Le Conte d'hiver*) avec leurs dates et lieux respectifs, sans erreur ni omission majeure.","Voici les pièces de Shakespeare jouées en Seine-Saint-Denis parmi les événements proposés :
+
+1. **Macbeth**
+   - Dates : 7-8 octobre et 14-15 novembre 2026
+   - Lieu : Espace Albatros, Montreuil [1]
+
+2. **Le Conte d'hiver** (*The Winter's Tale*)
+   - Date : Vendredi 29 janvier 2027 (14h30 et 20h30)
+   - Lieu : Théâtre et cinéma Georges Simenon, Rosny-sous-Bois [3]"
+Une exposition photo sur l'immigration ?,thème,1/1,True,"La réponse de l'assistant contient toutes les informations attendues (nom de l'exposition, dates, lieu) sans erreur ni omission.","Voici l'événement qui correspond à votre demande :
+
+**Bouba Touré, un photographe de l'immigration africaine**
+Du 1 février au 30 septembre 2027
+Archives départementales de la Seine-Saint-Denis, Bobigny [1]"
+Un spectacle qui parle de piscine ou de natat,thème,1/1,True,"La réponse contient bien l'événement attendu (*La ligne de nage*), les dates (11 et 12 mars 2027) et le lieu (3T - Théâtre du Troisième Type, Saint-Denis), sans erreur ni omission.","Voici un événement qui correspond à ta demande :
+
+**La ligne de nage**
+Spectacle autour de la piscine, du sport et de la vieillesse, adapté d'un roman.
+Les 11 et 12 mars 2027 aux **3T - Théâtre du Troisième Type, Saint-Denis** [1]."
+Où participer à une récolte d'olives ?,thème,2/2,True,"La réponse de l'assistant contient toutes les informations attendues (événement, dates, lieu de lancement) sans erreur, tout en ajoutant des précisions non contradictoires.","Voici les événements liés à la récolte d'olives en Seine-Saint-Denis :
+
+**Récolte oléicole en Seine-Saint-Denis**
+Du 31 octobre au 21 novembre 2026, dans toutes les communes de Seine-Saint-Denis [1]
+
+**Lancement de la récolte oléicole 2026**
+Samedi 31 octobre, 11h00, à la Maison de quartier Floréal - La Saussaie - La Courtille, Saint-Denis [2]"
+"Qu'est-ce qui est programmé au Triton, aux Li",lieu,1/1,True,"La réponse de l'assistant inclut bien l'événement attendu (*SOLANGE : Alone Together ! piano solo* le 27 février 2027) sans erreur, même si elle ajoute d'autres informations.","Voici les évènements programmés au **Triton, Les Lilas** :
+
+- **SOLANGE : Constellation quartet** – *jazz, musique contemporaine, groove, quartet, électronique*
+  **Samedi 26 septembre 2026, 20h30** [1]
+
+- **SOLANGE : Alone Together ! piano solo** – *piano solo, jazz, électronique*
+  **Samedi 27 février 2027, 20h30** [2]"
+Que voir à l'Odéon de Tremblay-en-France en d,lieu,1/1,True,"La réponse contient bien l'événement attendu (*Chicago Blues*), la date (*5 décembre 2026*) et l'horaire (*20h30*), avec des détails supplémentaires non pénalisants.","Voici l'événement à voir à l'Odéon de Tremblay-en-France en décembre :
+
+**CHICAGO BLUES**
+Samedi 5 décembre 2026, 20h30
+L'Odéon, Tremblay-en-France
+[1]"
+Quels évènements à Clichy-sous-Bois ?,lieu,1/1,True,"La réponse contient bien l'événement attendu (*Juste Irena*), la date (*4 mai 2027*) et le lieu (*conservatoire Gilbert Klein*), avec des détails supplémentaires non contradictoires.","Voici l'événement à Clichy-sous-Bois :
+
+**Juste Irena**
+- Date : Mardi 4 mai 2027, 10h00 et 14h30
+- Lieu : Conservatoire Gilbert Klein (espace 93), Clichy-sous-Bois [1]"
+Quelles expositions au musée Paul-Éluard de S,lieu,2/2,False,"La réponse de l'assistant mentionne une exposition sans titre précis (""Dans l'ombre des regards"" est manquante) et ajoute un numéro de référence ([1], [3]) non présent dans la réponse attendue.","Voici les expositions prévues au **Musée d'art et d'histoire Paul Eluard** à Saint-Denis :
+
+- **Florilège** – Du 26 avril au 6 juin 2027 [1]
+- **Exposition sans titre précisé** – Du 25 mars au 5 décembre 2027 [3]"
+Que se passe-t-il à Montfermeil ?,lieu,1/1,True,"La réponse de l'assistant contient bien l'événement attendu (ANiMA), la date (14 janvier 2027) et le lieu (forum Léopold-Sédar-Senghor), avec des précisions supplémentaires non contradictoires.","Voici l'événement à Montfermeil :
+
+**ANiMA**
+musique, mouvement, petite enfance
+Forum Léopold-Sédar-Senghor, Montfermeil
+Jeudi 14 janvier 2027, 09h30 et 10h45 [1]"
+Que faire le 21 juin 2027 ?,date,1/1,True,"La réponse de l'assistant contient bien les mêmes informations essentielles (événement ""Faites de la musique !"", date, heure et lieu) que la réponse attendue, avec des détails supplémentaires qui ne la rendent pas incorrecte.","Le 21 juin 2027, je te recommande l'événement suivant en Seine-Saint-Denis :
+
+**Faites de la musique ! Fête de la musique**
+Lundi 21 juin 2027, 18h00
+Parc François Mitterrand, Bondy [1]"
+Quel spectacle voir le 1er décembre 2026 ?,date,1/1,True,"La réponse de l'assistant contient bien le spectacle *Psicofonía - Silences d'Espagne*, la date du 1er décembre 2026, l'horaire (20h30) et le lieu (Espace Michel Simon de Noisy-le-Grand), conformément à la réponse attendue.","Voici l'événement qui correspond à votre demande pour le **1er décembre 2026** :
+
+**Psicofonía - Silences d'Espagne**
+*Théâtre, mémoire, guerre d'Espagne*
+**Date** : Mardi 1er décembre, 20h30
+**Lieu** : Espace Michel Simon - Noisy-le-Grand
+[1]"
+Quel concert le 13 décembre 2026 ?,date,1/1,True,"La réponse contient bien l'événement attendu (Naïssam Jalal « Shining Legacy »), la date (13 décembre 2026), le lieu (conservatoire Joséphine-Baker du Pré-Saint-Gervais) et l'horaire (20h), avec des précisions supplémentaires non pénalisantes.","Voici l'événement correspondant à votre demande :
+
+**LES COULEURS DU SON : Naïssam Jalal ""Shining Legacy""**
+Dimanche 13 décembre 2026, 20h00
+Conservatoire de musique et de danse Joséphine-Baker du Pré, Le Pré-Saint-Gervais [4]"
+Quels spectacles le week-end du 28-29 novembr,date,2/2,True,"La réponse de l'assistant contient toutes les informations attendues (événements, dates et lieux) sans erreur, tout en ajoutant des précisions non contradictoires.","Voici les spectacles proposés le week-end du **28-29 novembre 2026** en Seine-Saint-Denis :
+
+- **Le Banquet**
+  Conte et repas
+  **27 et 28 novembre** (donc le samedi 28)
+  Théâtre des Bergeries, Noisy-le-Sec **[1]**
+
+- **Des luttes et des rêves**
+  Cabaret populaire (musique, danse, théâtre musical)
+  **Dimanche 29 novembre à 15h00**
+  Salle André Malraux, Bondy **[6]**
+  *(Note : Une version avec repas a lieu le 27 novembre au Pavillon de Romainville, mais celle du 29 est sans repas.)*"
+Y a-t-il un match du PSG au Parc des Princes ,hors corpus,-,True,"La réponse de l'assistant a le même sens et contient les mêmes informations que la réponse attendue, sans erreur ni omission.",Aucun événement correspondant à un match du PSG au Parc des Princes n'est listé dans les propositions fournies.
+Un concert de Beyoncé au Stade de France ?,hors corpus,-,True,"La réponse de l'assistant confirme l'absence de concert de Beyoncé au Stade de France, comme attendu, sans erreur ni omission.",Je n'ai aucun évènement correspondant à un concert de Beyoncé au Stade de France dans la liste fournie.
+Quel temps fera-t-il demain à Bobigny ?,hors corpus,-,False,"La réponse de l'assistant ne précise pas explicitement qu'il ne recommande **que des événements culturels**, ce qui est l'information centrale attendue.","Je ne peux pas répondre à cette question, car je ne dispose pas d'informations sur la météo dans les événements que tu m'as fournis."
+Un truc sympa à faire ?,précision,-,True,"La réponse de l'assistant suit la logique attendue en demandant des précisions tout en proposant des pistes adaptées, sans lister d'événements spécifiques au hasard.","Quel type d'activité cherchez-vous et pour qui ?
+- Un spectacle de marionnettes ce week-end
+- Une activité créative pour un enfant de 8 ans
+- Un concert de musique du monde en octobre"
+Qu'est-ce que vous me conseillez ?,précision,-,True,"La réponse de l'assistant suit la consigne en demandant une précision (type d'activité, période) et propose des pistes similaires à celles attendues, sans lister d'événements aléatoires.","Quel type d'activité culturelle cherchez-vous en Seine-Saint-Denis ?
+- Un spectacle pour enfants ce week-end
+- Une exposition en octobre
+- Un atelier créatif pour ados"

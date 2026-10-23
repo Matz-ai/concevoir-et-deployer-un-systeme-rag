@@ -5,9 +5,11 @@ import CarteEvenement from "./CarteEvenement.tsx";
 import PucesFiltres from "./PucesFiltres.tsx";
 
 /** Une question, sa réponse au fil de l'eau, et les évènements qui la fondent : cités d'abord. */
-export default function Echange({ echange, rang, poser }: {
+export default function Echange({ echange, rang, poser, occupe }: {
   echange: EchangeType;
   rang: number;
+  /** Une réponse est en cours : on ne relance rien avant qu'elle finisse. */
+  occupe: boolean;
   /** Envoie une question, avec des filtres imposés quand on a corrigé les puces. */
   poser: (question: string, filtres?: Filtres) => void;
 }) {
@@ -37,7 +39,7 @@ export default function Echange({ echange, rang, poser }: {
   return (
     <section className="echange">
       <p className="question">{question}</p>
-      {filtres && <PucesFiltres filtres={filtres} relancer={(f) => poser(question, f)} />}
+      {filtres && <PucesFiltres filtres={filtres} relancer={(f) => poser(question, f)} occupe={occupe} />}
       <div className="reponse" aria-live="polite" aria-busy={etat === "en_cours"}>
         {reponse ? rendreMarkdown(reponse, citation) : etat === "en_cours" && !erreur && (
           <p className="attente">{sources.length ? "Puls rédige sa réponse…" : "Puls cherche dans l'agenda…"}</p>
@@ -45,7 +47,7 @@ export default function Echange({ echange, rang, poser }: {
         {pistes && pistes.length > 0 && (
           <div className="pistes">
             {pistes.map((p) => (
-              <button key={p} type="button" onClick={() => poser(p)}>
+              <button key={p} type="button" onClick={() => poser(p)} disabled={occupe}>
                 {p}
               </button>
             ))}
