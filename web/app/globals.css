@@ -439,6 +439,91 @@ h4,
   border: 1px solid var(--bord-fort);
 }
 
+.puces {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: -4px 0 12px;
+}
+
+.puce {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--bord);
+  border-radius: 999px;
+}
+
+.puce button {
+  padding: 3px 4px 3px 10px;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.puce button + button {
+  padding: 3px 10px 3px 4px;
+  color: var(--encre-3);
+}
+
+.puce button:hover {
+  color: var(--accent);
+}
+
+.puce--edition {
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 10px;
+  border-color: var(--accent);
+  border-radius: var(--rayon-petit);
+}
+
+.puce--edition label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--encre-2);
+}
+
+.puce--edition input {
+  max-width: 150px;
+  padding: 2px 6px;
+  font: inherit;
+  color: var(--encre);
+  background: var(--surface);
+  border: 1px solid var(--bord-fort);
+  border-radius: 6px;
+}
+
+.puce--edition button,
+.puce--edition button + button {
+  padding: 3px 10px;
+  color: var(--accent-encre);
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.pistes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.pistes button {
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--bord);
+  border-radius: var(--rayon);
+  cursor: pointer;
+}
+
+.pistes button:hover {
+  border-color: var(--accent);
+}
+
 /* sur téléphone, une carte en ligne : la miniature à gauche, plusieurs évènements tiennent à l'écran */
 @media (max-width: 480px) {
   .bandeau-sous-titre {

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import Echange from "@/components/Echange.tsx";
 import Logo from "@/components/Logo.tsx";
 import { AMORCES } from "@/lib/amorces.ts";
-import { appliquer, lireFlux, type Echange as EchangeType } from "@/lib/flux.ts";
+import { appliquer, lireFlux, type Echange as EchangeType, type Filtres } from "@/lib/flux.ts";
 
 export default function Accueil() {
   const [echanges, setEchanges] = useState<EchangeType[]>([]);
@@ -16,8 +16,7 @@ export default function Accueil() {
   const modifierDernier = (f: (e: EchangeType) => EchangeType) =>
     setEchanges((liste) => [...liste.slice(0, -1), f(liste[liste.length - 1])]);
 
-  async function envoyer() {
-    const question = saisie.trim();
+  async function envoyer(question: string, filtres?: Filtres) {
     if (!question || enCours) return;
     setSaisie("");
     setEnCours(true);
@@ -28,7 +27,8 @@ export default function Accueil() {
       const reponse = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question }),
+        // des filtres corrigés dans les puces remplacent ceux que l'API lirait dans la question
+        body: JSON.stringify({ question, filtres: filtres ?? null }),
         signal: arret.current.signal,
       });
       if (!reponse.ok || !reponse.body) throw new Error(String(reponse.status));
@@ -79,7 +79,7 @@ export default function Accueil() {
         </div>
       ) : (
         <div className="fil">
-          {echanges.map((e, i) => <Echange key={i} echange={e} rang={i} />)}
+          {echanges.map((e, i) => <Echange key={i} echange={e} rang={i} poser={envoyer} />)}
         </div>
       )}
 
@@ -87,7 +87,7 @@ export default function Accueil() {
         className="saisie"
         onSubmit={(e) => {
           e.preventDefault();
-          envoyer();
+          envoyer(saisie.trim());
         }}
       >
         <textarea
@@ -101,7 +101,7 @@ export default function Accueil() {
             // Entrée envoie, Maj+Entrée saute une ligne
             if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
               e.preventDefault();
-              envoyer();
+              envoyer(saisie.trim());
             }
           }}
         />

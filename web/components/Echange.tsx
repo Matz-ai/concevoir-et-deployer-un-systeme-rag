@@ -1,11 +1,17 @@
 import { cites } from "@/lib/citations.ts";
-import type { Echange as EchangeType } from "@/lib/flux.ts";
+import type { Echange as EchangeType, Filtres } from "@/lib/flux.ts";
 import { rendreMarkdown } from "@/lib/markdown.tsx";
 import CarteEvenement from "./CarteEvenement.tsx";
+import PucesFiltres from "./PucesFiltres.tsx";
 
 /** Une question, sa réponse au fil de l'eau, et les évènements qui la fondent : cités d'abord. */
-export default function Echange({ echange, rang }: { echange: EchangeType; rang: number }) {
-  const { question, reponse, sources, erreur, etat } = echange;
+export default function Echange({ echange, rang, poser }: {
+  echange: EchangeType;
+  rang: number;
+  /** Envoie une question, avec des filtres imposés quand on a corrigé les puces. */
+  poser: (question: string, filtres?: Filtres) => void;
+}) {
+  const { question, filtres, pistes, reponse, sources, erreur, etat } = echange;
   const numerosCites = echange.citations?.cites ?? cites(reponse, sources.length);
   const citees = sources.filter((s) => numerosCites.includes(s.numero));
   const autres = sources.filter((s) => !numerosCites.includes(s.numero));
@@ -31,9 +37,19 @@ export default function Echange({ echange, rang }: { echange: EchangeType; rang:
   return (
     <section className="echange">
       <p className="question">{question}</p>
+      {filtres && <PucesFiltres filtres={filtres} relancer={(f) => poser(question, f)} />}
       <div className="reponse" aria-live="polite" aria-busy={etat === "en_cours"}>
         {reponse ? rendreMarkdown(reponse, citation) : etat === "en_cours" && !erreur && (
           <p className="attente">{sources.length ? "Puls rédige sa réponse…" : "Puls cherche dans l'agenda…"}</p>
+        )}
+        {pistes && pistes.length > 0 && (
+          <div className="pistes">
+            {pistes.map((p) => (
+              <button key={p} type="button" onClick={() => poser(p)}>
+                {p}
+              </button>
+            ))}
+          </div>
         )}
         {etat === "arrete" && <p className="note">Réponse arrêtée.</p>}
         {erreur && <p className={erreur.reessai ? "note" : "note note--erreur"}>{erreur.message}</p>}
