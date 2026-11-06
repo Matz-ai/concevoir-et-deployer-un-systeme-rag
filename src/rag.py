@@ -115,7 +115,7 @@ chunks = [index.docstore.search(i) for i in index.index_to_docstore_id.values()]
 bm25 = BM25Retriever.from_documents(chunks, k=len(chunks), preprocess_func=mots)
 communes = sorted({d.metadata["ville"] for d in chunks})
 
-modele = ChatOpenAI(model=MODELE_CHAT, base_url=OPENROUTER, api_key=cle, temperature=0,
+modele = ChatOpenAI(model=MODELE_CHAT, base_url=OPENROUTER, api_key=cle, temperature=0, stream_usage=True,
                     max_retries=5)  # le pool Mistral d'OpenRouter renvoie des 429 par moments
 lecteur = (ChatPromptTemplate.from_messages([("system", LECTURE), ("human", "{question}")]).partial(
     jour=JOURS[aujourdhui.weekday()], aujourdhui=aujourdhui.strftime("%d/%m/%Y"), communes=", ".join(communes))

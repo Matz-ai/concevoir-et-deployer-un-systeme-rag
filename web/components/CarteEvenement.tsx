@@ -6,10 +6,23 @@ function ages(s: Source): string | null {
   return null;
 }
 
-export default function CarteEvenement({ source, id, cite }: { source: Source; id: string; cite: boolean }) {
+export default function CarteEvenement({ source, id, cite, allume, survoler }: {
+  source: Source;
+  id: string;
+  cite: boolean;
+  allume?: boolean;
+  survoler?: (numeros: number[]) => void;
+}) {
   const tranche = ages(source);
   return (
-    <article className={cite ? "carte carte--citee" : "carte"} id={id}>
+    <article
+      className={`carte${cite ? " carte--citee" : ""}${allume ? " carte--allumee" : ""}`}
+      id={id}
+      onMouseEnter={() => survoler?.([source.numero])}
+      onMouseLeave={() => survoler?.([])}
+      onFocus={() => survoler?.([source.numero])}
+      onBlur={() => survoler?.([])}
+    >
       {source.image ? (
         <img className="carte-image" src={source.image} alt="" loading="lazy" />
       ) : (
@@ -21,7 +34,7 @@ export default function CarteEvenement({ source, id, cite }: { source: Source; i
           {cite && <span className="badge">cité</span>}
           {tranche && <span className="badge badge--discret">{tranche}</span>}
         </div>
-        <h4>{source.titre}</h4>
+        <h2>{source.titre}</h2>
         {source.dates_texte && <p className="carte-date">{source.dates_texte}</p>}
         <p className="carte-lieu">{[source.lieu, source.ville].filter(Boolean).join(" · ")}</p>
         {source.lien && (

@@ -79,6 +79,7 @@ export default function Accueil() {
         </div>
       ) : (
         <div className="fil">
+          <h1 className="pour-lecteur-ecran">Conversation avec Puls</h1>
           {echanges.map((e, i) => <Echange key={i} echange={e} rang={i} poser={envoyer} occupe={enCours} />)}
         </div>
       )}

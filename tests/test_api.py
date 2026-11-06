@@ -50,7 +50,7 @@ class Saturee:
     def __init__(self, echecs):
         self.echecs = echecs
 
-    async def astream(self, entree):
+    async def astream(self, entree, config=None):
         if self.echecs:
             self.echecs -= 1
             raise RateLimitError("429", response=httpx.Response(429, request=httpx.Request("POST", "https://x")),
@@ -59,7 +59,9 @@ class Saturee:
 
 
 @pytest.fixture
-def client(monkeypatch):
+def client(monkeypatch, tmp_path):
+    monkeypatch.setattr(main, "JOURNAL", tmp_path / "journal.jsonl")
+    monkeypatch.setattr(main, "AVIS", tmp_path / "avis.jsonl")
     monkeypatch.setattr(rag, "lecteur", RunnableLambda(lambda question: rag.Lecture(ville="Montreuil")))
     monkeypatch.setattr(rag, "recherche", RunnableLambda(lambda question: DOCUMENTS))
     monkeypatch.setattr(rag, "index", FAISS.from_documents(DOCUMENTS, DeterministicFakeEmbedding(size=8)))
@@ -83,17 +85,17 @@ def test_sources_puis_texte_puis_citations_verifiees(client):
     flux = evenements(client.post("/api/chat", json={"question": "Du Shakespeare ?"}))
 
     noms = [nom for nom, _ in flux]
-    assert noms[:2] == ["filtres", "sources"] and noms[-2:] == ["citations", "fin"] and "texte" in noms
+    assert noms[:2] == ["filtres", "sources"] and noms[-3:] == ["citations", "cout", "fin"] and "texte" in noms
     assert flux[0][1]["ville"] == "Montreuil" and flux[0][1]["date_min"] is None
     assert [(s["numero"], s["titre"]) for s in flux[1][1]["sources"]] == [(1, "Macbeth"), (2, "Le Conte d'hiver")]
     assert "".join(d["texte"] for nom, d in flux if nom == "texte").endswith("fantôme [7].")
-    assert flux[-2][1] == {"cites": [1, 2], "inconnus": [7]}
+    assert flux[-3][1] == {"cites": [1, 2], "inconnus": [7]}
 
 
 def test_une_429_est_reessayee(client, monkeypatch):
     monkeypatch.setattr(rag, "generation", Saturee(echecs=1))
     flux = evenements(client.post("/api/chat", json={"question": "Du Shakespeare ?"}))
-    assert [nom for nom, _ in flux] == ["filtres", "sources", "erreur", "texte", "citations", "fin"]
+    assert [nom for nom, _ in flux] == ["filtres", "sources", "erreur", "texte", "citations", "cout", "fin"]
     assert flux[2][1]["reessai"] is True
 
 
@@ -126,7 +128,7 @@ def test_une_question_vague_appelle_une_precision(client, monkeypatch):
     monkeypatch.setattr(rag, "lecteur", RunnableLambda(lambda question: rag.Lecture(
         precision="Plutôt concert ou spectacle ?", pistes=["Un concert ce week-end", "Un spectacle pour enfants"])))
     flux = evenements(client.post("/api/chat", json={"question": "Un truc sympa ?"}))
-    assert [nom for nom, _ in flux] == ["filtres", "texte", "pistes", "fin"]
+    assert [nom for nom, _ in flux] == ["filtres", "texte", "pistes", "cout", "fin"]
     assert flux[2][1]["pistes"] == ["Un concert ce week-end", "Un spectacle pour enfants"]
 
 
@@ -169,3 +171,46 @@ def test_une_saturation_a_la_lecture_des_filtres_est_lisible(client, monkeypatch
     monkeypatch.setattr(rag, "lecteur", RunnableLambda(saturee))
     flux = evenements(client.post("/api/chat", json={"question": "Du jazz ?"}))
     assert flux == [("erreur", {"message": "Le service Mistral est saturé, réessayez dans un instant.", "reessai": False})]
+
+
+def test_le_cout_additionne_les_appels_et_passe_en_euros(monkeypatch):
+    monkeypatch.setattr(main, "EUROS_PAR_DOLLAR", 0.5)
+    usage = {"lecture": {"input_tokens": 1_000_000, "output_tokens": 0},
+             "reponse": {"input_tokens": 1_000_000, "output_tokens": 1_000_000}}
+    assert main.cout(usage, 1.234, 2) == {"jetons_entree": 2_000_000, "jetons_sortie": 1_000_000,
+                                          "euros": 1.25, "recherche_s": 1.23, "generation_s": 2}
+
+
+def test_chaque_reponse_est_journalisee(client):
+    faux_modele.messages = iter(["Macbeth [1]."])
+    flux = evenements(client.post("/api/chat", json={"question": "Du Shakespeare ?"}))
+    ligne = json.loads(main.JOURNAL.read_text(encoding="utf-8"))
+    assert ligne["question"] == "Du Shakespeare ?" and ligne["filtres"]["ville"] == "Montreuil"
+    assert dict(flux)["cout"].items() <= ligne.items()
+
+
+def test_un_avis_renvoye_avec_un_commentaire_ne_compte_qu_une_fois(client):
+    avis = {"id": "a1", "avis": "contre", "question": "Du jazz ?", "reponse": "Rien.", "sources": [{"uid": 11}]}
+    assert client.post("/api/avis", json=avis).status_code == 204
+    client.post("/api/avis", json=avis | {"commentaire": "Il y en a au Triton."})
+    assert client.post("/api/avis", json=avis | {"avis": "bof"}).status_code == 422
+    bilan = client.get("/api/qualite").json()["avis"]
+    assert (bilan["pour"], bilan["contre"]) == (0, 1)
+    assert bilan["commentaires"] == [{"avis": "contre", "question": "Du jazz ?", "commentaire": "Il y en a au Triton."}]
+
+
+def test_la_page_qualite_lit_les_evaluations_versionnees(client):
+    q = client.get("/api/qualite").json()
+    assert q["total"]["v1"] == {"correctes": 10, "questions": 22, "trouves": 12, "attendus": 26}
+    assert q["total"]["v2"] == {"correctes": 18, "questions": 22, "trouves": 26, "attendus": 26}
+    assert [t["type"] for t in q["types"]] == ["thème", "lieu", "date", "hors corpus", "précision"]
+    assert len(q["questions"]) == 22 and q["production"] == {"reponses": 0}
+
+
+def test_la_page_qualite_calcule_les_moyennes_du_journal(client):
+    for euros in (0.001, 0.003):
+        main.ajouter(main.JOURNAL, {"euros": euros, "jetons_entree": 100, "jetons_sortie": 10,
+                                    "recherche_s": 1, "generation_s": 3})
+    production = client.get("/api/qualite").json()["production"]
+    assert production == {"reponses": 2, "euros": 0.002, "jetons_entree": 100, "jetons_sortie": 10,
+                          "recherche_s": 1, "generation_s": 3}
