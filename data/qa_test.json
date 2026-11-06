@@ -58,5 +58,11 @@
    "evenements": []},
   {"question": "Quel temps fera-t-il demain à Bobigny ?", "type": "hors corpus",
    "reponse_attendue": "L'assistant ne peut pas répondre : il ne recommande que des évènements culturels.",
+   "evenements": []},
+  {"question": "Un truc sympa à faire ?", "type": "précision",
+   "reponse_attendue": "L'assistant demande une précision (type de sortie, commune ou date) en proposant quelques pistes, au lieu de citer des évènements au hasard.",
+   "evenements": []},
+  {"question": "Qu'est-ce que vous me conseillez ?", "type": "précision",
+   "reponse_attendue": "L'assistant demande une précision (type de sortie, commune ou date) en proposant quelques pistes, au lieu de citer des évènements au hasard.",
    "evenements": []}
 ]

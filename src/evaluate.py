@@ -2,6 +2,7 @@
 générée à la réponse attendue, et on mesure à part si la recherche a remonté les bons évènements."""
 
 import json
+import sys
 
 import pandas as pd
 
@@ -34,7 +35,8 @@ for qa in json.load(open("data/qa_test.json", encoding="utf-8")):
                    "justification": verdict.split("\n", 1)[-1].strip(), "reponse": resultat["reponse"]})
 
 resultats = pd.DataFrame(lignes)
-resultats.to_csv("data/evaluation.csv", index=False)  # détail relu à la main et repris dans le rapport
+# détail relu à la main et repris dans le rapport ; un autre fichier pour comparer deux versions
+resultats.to_csv(sys.argv[1] if len(sys.argv) > 1 else "data/evaluation.csv", index=False)
 print(resultats.drop(columns=["justification", "reponse"]).to_string(), "\n")
 print(resultats.groupby("type").correct.mean().map("{:.0%}".format).to_string(), "\n")
 print(f"Score global : {resultats.correct.sum()}/{len(resultats)} réponses correctes")

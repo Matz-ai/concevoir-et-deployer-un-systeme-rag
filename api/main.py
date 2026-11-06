@@ -1,9 +1,14 @@
 """API web de Puls-Events : expose au navigateur la chaîne RAG de src/rag.py.
 
-`POST /api/chat` répond en flux SSE (`text/event-stream`). Chaque évènement porte un nom et un JSON :
+`POST /api/chat` reçoit `{"question": "...", "filtres": {...} | null}` : des filtres envoyés (corrigés dans
+l'interface) remplacent ceux que Mistral lit dans la question. La réponse est un flux SSE
+(`text/event-stream`), chaque évènement porte un nom et un JSON :
 
+    filtres     {"ville", "date_min", "date_max", "age", "theme"}   null quand la question ne dit rien
+    pistes      {"pistes": ["...", "..."]}   question trop vague : le texte demande une précision,
+                ces relances l'accompagnent, et le flux s'arrête là (ni sources ni citations)
     sources     {"sources": [{numero, uid, titre, dates_texte, lieu, ville, lien, image, ...}]}
-                envoyé dès que Faiss a répondu, avant la génération ; `numero` est le [n] du contexte
+                envoyé dès que la recherche a répondu, avant la génération ; `numero` est le [n] du contexte
     texte       {"texte": "..."}             un morceau de réponse, au fil de l'eau
     citations   {"cites": [1, 3], "inconnus": [7]}   les [n] de la réponse, rattachés ou non à une source
     erreur      {"message": "...", "reessai": bool}  reessai = un nouvel essai suit, sinon le flux s'arrête
@@ -40,6 +45,7 @@ app = FastAPI(title="Puls-Events")
 
 class Question(BaseModel):
     question: str
+    filtres: rag.Filtres | None = None
 
 
 def sse(nom, donnees):
@@ -57,8 +63,16 @@ def citations(texte, nombre):
             "inconnus": sorted(n for n in numeros if not 1 <= n <= nombre)}
 
 
-async def repondre(question):
-    documents = await rag.recherche.ainvoke(question)
+async def repondre(question, imposes):
+    lecture = rag.Lecture(**imposes.model_dump()) if imposes else await rag.lecteur.ainvoke(question)
+    yield sse("filtres", lecture.model_dump(mode="json", exclude={"precision", "pistes"}))
+    if lecture.vague():
+        yield sse("texte", {"texte": lecture.precision})
+        yield sse("pistes", {"pistes": lecture.pistes})
+        yield sse("fin", {})
+        return
+
+    documents = await rag.recherche.ainvoke({"question": question, "filtres": lecture})
     # un évènement découpé en plusieurs chunks n'est qu'une source, numérotée comme dans rag.en_contexte
     evenements = list({d.metadata["uid"]: d for d in documents}.values())
     yield sse("sources", {"sources": [{"numero": n} | fiche(d.metadata) for n, d in enumerate(evenements, 1)]})
@@ -87,6 +101,8 @@ async def sans_plantage(flux):
     try:
         async for evenement in flux:
             yield evenement
+    except RateLimitError:  # la lecture des filtres a épuisé les nouveaux essais du client OpenAI
+        yield sse("erreur", {"message": "Le service Mistral est saturé, réessayez dans un instant.", "reessai": False})
     except Exception as e:  # clé refusée, réseau coupé : le navigateur doit lire une erreur, pas un flux coupé net
         yield sse("erreur", {"message": f"La réponse a échoué ({type(e).__name__}).", "reessai": False})
 
@@ -94,7 +110,7 @@ async def sans_plantage(flux):
 @app.post("/api/chat")
 def chat(q: Question):
     # pas d'historique : chaque question est traitée seule, comme le demande l'énoncé
-    return StreamingResponse(sans_plantage(repondre(q.question)), media_type="text/event-stream",
+    return StreamingResponse(sans_plantage(repondre(q.question, q.filtres)), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache"})
 
 

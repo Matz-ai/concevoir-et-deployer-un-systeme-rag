@@ -3,6 +3,8 @@ langchain==1.4.1
 langchain-community==0.4.2   # fournit le vectorstore FAISS (pas de paquet dedie officiel)
 langchain-openai==1.6.2      # modeles Mistral appeles via OpenRouter, API compatible OpenAI
 langchain-text-splitters==1.1.2  # decoupage des textes en chunks avant vectorisation
+langchain-classic==1.0.8    # V2 : EnsembleRetriever (fusion BM25 + Faiss), deja tire par langchain-community
+rank-bm25==0.2.2            # V2 : recherche par mots exacts du BM25Retriever
 
 # Base vectorielle
 faiss-cpu==1.15.1

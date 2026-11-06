@@ -157,8 +157,10 @@ l'extraction du 25 septembre 2026.
 │   ├── presentation.pptx      # présentation de soutenance, 12 slides
 │   └── generer_presentation.py  # régénère la présentation (pip install python-pptx)
 └── data/
-    ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues
+    ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues (22 en V2)
     ├── evaluation.csv   # résultats de la dernière évaluation, question par question
+    ├── evaluation_v1.csv  # V2 : évaluation de la chaîne du lot 1, base de comparaison
+    ├── evaluation_v2.csv  # V2 : évaluation après le lot 2 (recherche hybride, filtres)
     ├── raw/             # réponses brutes de l'API          ┐
     ├── processed/       # dataset propre, prêt à indexer     ├ non versionnés,
     └── faiss_index/     # index vectoriel + métadonnées      ┘ reconstruits par les scripts
@@ -366,12 +368,58 @@ main, deux terminaux : `python -m uvicorn main:app --app-dir api --port 8000` à
 
 **Tests.** `pytest` couvre aussi l'API (`tests/test_api.py`) sans réseau : l'index et le modèle Mistral
 sont remplacés par des faux, ce qui permet à la CI de vérifier l'ordre du flux, les citations et les
-nouveaux essais sur 429. Côté web, `npm test` dans `web/` vérifie la lecture du flux SSE et le
-relevé des citations ; la CI lance aussi `npm run build`.
+nouveaux essais sur 429. Côté web, `npm test` dans `web/` vérifie la lecture du flux SSE, le
+relevé des citations et le libellé des puces de filtres ; la CI lance aussi `npm run build`.
 
 > L'extraction du 25/09/2026 est conservée, mais `preprocess.py` relancé le 23/10/2026 écarte
 > 178 évènements de plus, qui ont maintenant commencé il y a plus d'un an : **2 120 évènements,
 > 3 558 vecteurs**. Les 20 évènements du jeu de test sont tous encore là.
+
+### Lot 2 : de meilleures réponses
+
+L'évaluation du POC désignait la recherche comme maillon faible (« jazz » à 0/2, dates à 1/4). Le
+lot 2 corrige ce qu'elle a mesuré, sans toucher au modèle de génération ni à l'index.
+
+| Ajout | Ce qui est fait | Pourquoi |
+| --- | --- | --- |
+| Recherche hybride | BM25 (`rank-bm25`, mots exacts) et Faiss (sens) fusionnés par l'`EnsembleRetriever` de LangChain (`langchain-classic`), 10 chunks gardés | « jazz » n'est que dans les mots-clés de ses concerts : un vecteur le noie, un comptage de mots le trouve |
+| Filtres lus dans la question | un appel Mistral en sortie structurée (Pydantic) lit commune, période, âge et thème ; « ce week-end » ou « en décembre » deviennent des dates réelles. Ils filtrent les métadonnées pour BM25 comme pour Faiss, et BM25 cherche les mots du thème plutôt que ceux de toute la question | un vecteur ne sait pas ce qu'est « le 13 décembre », un filtre sur `date_debut` / `date_fin` si |
+| Filtres visibles | évènement SSE `filtres`, affiché en puces (« 📍 Montreuil », « 📅 5–6 déc. ») qu'on retire ou corrige ; la question repart alors avec ces filtres imposés, sans relecture | une mauvaise lecture se voit et se corrige en un clic |
+| Demande de précision | quand aucun filtre n'est lu (« un truc sympa ? »), une question courte et deux ou trois pistes cliquables (évènement SSE `pistes`) au lieu d'une liste au hasard | Mistral voulait demander une précision presque partout : la règle « aucun filtre lu » est décidée par le code, pas par le modèle |
+
+**Avant / après** sur le jeu de test (`python src/evaluate.py`, rejoué au 25/09/2026 grâce à
+`DATE_REFERENCE=2026-09-25`). Le jeu passe à 22 questions avec deux questions vagues. Le détail est
+dans `data/evaluation_v1.csv` (chaîne du lot 1) et `data/evaluation_v2.csv` (lot 2).
+
+| Type | Réponses correctes, lot 1 | Lot 2 | Rappel de la recherche, lot 1 | Lot 2 |
+| --- | :-: | :-: | :-: | :-: |
+| Thème | 5 / 8 | 6 / 8 | 8 / 15 | 15 / 15 |
+| Lieu | 1 / 5 | 4 / 5 | 3 / 6 | 6 / 6 |
+| Date | 1 / 4 | 4 / 4 | 1 / 5 | 5 / 5 |
+| Hors corpus | 3 / 3 | 2 / 3 | — | — |
+| Précision | 0 / 2 | 2 / 2 | — | — |
+| **Total** | **10 / 22** | **18 / 22** | **12 / 26 (46 %)** | **26 / 26 (100 %)** |
+
+Relecture à la main des réponses qui ont changé de verdict ou restent fausses :
+
+- **Tous les évènements attendus sont maintenant retrouvés.** Les huit progrès (blues, Triton,
+  Clichy-sous-Bois, Montfermeil, les trois dates, les deux questions vagues) viennent de la recherche
+  et des filtres.
+- **Jazz : la recherche est réparée, la génération pas encore.** Les deux concerts attendus sont dans
+  le contexte, mais le modèle n'en cite qu'un et ajoute *SOLANGE : Constellation quartet* (26 septembre,
+  bien à venir à la date de référence). Verdict INCORRECT justifié : un évènement attendu manque.
+- **Musée Paul-Éluard** : le modèle écrit « exposition sans titre précisé » au lieu de *Dans l'ombre
+  des regards*, comme au dépôt.
+- **Météo à Bobigny, seul recul** : l'assistant refuse sans inventer, mais sans dire qu'il ne
+  recommande que des évènements. Le juge le compte faux ; à la relecture, c'est correct, comme au dépôt
+  où le juge avait été jugé trop sévère sur cette même question. Score relu : **19 / 22**.
+
+Le thème comme requête BM25 a été choisi sur ce jeu de test (rappel 22/26 avec la question entière,
+26/26 avec le thème) : c'est le risque de régler un système sur ses propres questions d'examen, à
+contrôler sur de nouvelles questions annotées.
+
+Chaque question coûte maintenant deux appels Mistral au lieu d'un (lecture des filtres, puis
+réponse), soit une à deux secondes de plus avant les sources.
 
 ---
 
