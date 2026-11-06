@@ -354,13 +354,12 @@ h4,
   border: 2px solid var(--surface);
   border-radius: 13px;
   box-shadow: 0 1px 4px rgb(0 0 0 / 35%);
-  transition: scale 0.12s; /* surtout pas transform : Leaflet s'en sert pour placer le repère */
 }
 
+/* pas de scale ici : Leaflet place le repère par transform, et scale multiplierait aussi ce déplacement */
 .repere--allume {
   outline: 3px solid var(--nuit-2);
   outline-offset: 1px;
-  scale: 1.25;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1001,11 +1000,13 @@ span.puce button:hover:enabled {
 }
 
 /* sur téléphone, une carte en ligne : la miniature à gauche, plusieurs évènements tiennent à l'écran */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .bandeau-sous-titre {
     display: none;
   }
+}
 
+@media (max-width: 480px) {
   .carte {
     flex-direction: row;
   }
