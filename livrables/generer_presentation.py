@@ -76,7 +76,7 @@ slide.background.fill.solid()
 slide.background.fill.fore_color.rgb = BLEU
 texte(slide, 0.9, 2.2, 11.5, 1.2, ["Un assistant RAG pour recommander des évènements culturels"], 38, BLANC, True)
 texte(slide, 0.9, 3.7, 11.5, 0.6, ["POC pour Puls-Events avec OpenAgenda, Faiss, Mistral et LangChain"], 22, RGBColor(0xC9, 0xD8, 0xEE))
-texte(slide, 0.9, 5.6, 11.5, 0.9, ["Mathieu Zinzen, Data Engineer", "Soutenance, septembre 2026"], 16, RGBColor(0xC9, 0xD8, 0xEE))
+texte(slide, 0.9, 5.6, 11.5, 0.9, ["Mathieu Zinzen, Data Engineer", "POC de septembre 2026, V2 de novembre 2026"], 16, RGBColor(0xC9, 0xD8, 0xEE))
 
 # 2 : le besoin
 slide = diapo("Le besoin de Puls-Events", 2)
@@ -200,27 +200,72 @@ texte(slide, 7.6, 1.6, 5.2, 5.3, [
     "C'est donc la recherche qu'il faut améliorer en priorité.",
     "Exemple : les concerts de jazz sortent aux rangs 114 et 388, car « jazz » n'est que dans leurs mots-clés."], 18)
 
-# 11 : démo
+# 11 : la V2, une application
+slide = diapo("La V2 : une vraie application", 11)
+slide.shapes.add_picture("livrables/captures/reponse-shakespeare.jpg", Inches(0.6), Inches(1.45), height=Inches(5.3))
+texte(slide, 8.0, 1.5, 4.9, 5.3, [
+    "Le POC reste figé. La V2 ajoute une API FastAPI et une interface Next.js.",
+    "La chaîne ne change pas : LangChain, Faiss, Mistral.",
+    "Les sources s'affichent avant le texte, qui s'écrit au fil de l'eau.",
+    "Chaque citation mène à sa fiche, et une carte montre les lieux.",
+    "Ça marche aussi sur téléphone."], 18)
+
+# 12 : la V2, les résultats
+slide = diapo("Résultats de la V2 : de 10 à 18 sur 22", 12)
+donnees = CategoryChartData()
+donnees.categories = ["Thème (8)", "Lieu (5)", "Date (4)", "Hors corpus (3)", "Précision (2)"]
+donnees.add_series("V1", (5, 1, 1, 3, 0))
+donnees.add_series("V2", (6, 4, 4, 2, 2))
+graphique = slide.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(0.6), Inches(1.4), Inches(7.2), Inches(5.3), donnees).chart
+graphique.has_title = False
+graphique.has_legend, graphique.legend.include_in_layout = True, False
+graphique.legend.font.size = Pt(14)
+graphique.plots[0].has_data_labels = True
+graphique.plots[0].data_labels.position = XL_LABEL_POSITION.OUTSIDE_END
+graphique.plots[0].data_labels.font.size = Pt(14)
+for serie, couleur in zip(graphique.plots[0].series, (ORANGE, CLAIR)):
+    serie.format.fill.solid()
+    serie.format.fill.fore_color.rgb = couleur
+graphique.value_axis.maximum_scale, graphique.value_axis.has_major_gridlines = 9, False
+graphique.value_axis.visible = False
+graphique.category_axis.tick_labels.font.size = Pt(14)
+texte(slide, 8.1, 1.5, 4.8, 5.3, [
+    "Recherche hybride : BM25 pour les mots exacts, Faiss pour le sens.",
+    "Filtres lus dans la question : commune, période, âge, thème.",
+    "Rappel de la recherche : de 12 à 26 sur 26.",
+    "Le jazz reste faux : les concerts sont dans le contexte, le modèle n'en cite qu'un.",
+    "Relu à la main : 19 sur 22."], 18)
+
+# 13 : suivi en production
+slide = diapo("Suivre la qualité en production", 13)
+slide.shapes.add_picture("livrables/captures/qualite.jpg", Inches(0.6), Inches(1.45), height=Inches(5.3))
+texte(slide, 7.9, 1.5, 5, 5.3, [
+    "La page Qualité réunit score, rappel, avis, coût et temps.",
+    "Le coût et le temps sont mesurés à chaque réponse : environ 0,001 € et 3,6 s, sur 11 questions de test.",
+    "Détecter une dérive : rejouer le jeu de test chaque semaine et comparer au score de référence.",
+    "Il reste à automatiser ce rejeu et les alertes."], 18)
+
+# 14 : démo
 slide = pres.slides.add_slide(pres.slide_layouts[6])
 slide.background.fill.solid()
 slide.background.fill.fore_color.rgb = BLEU
 texte(slide, 0.9, 2.4, 11.5, 1, ["Démo live"], 48, BLANC, True, PP_ALIGN.CENTER)
-texte(slide, 0.9, 3.7, 11.5, 0.6, ["python src/chat.py"], 24, RGBColor(0xC9, 0xD8, 0xEE), align=PP_ALIGN.CENTER)
-texte(slide, 0.9, 4.6, 11.5, 1, ["Cinq questions : une simple, un lieu, une date, une recommandation et une hors sujet"], 18,
+texte(slide, 0.9, 3.7, 11.5, 0.6, ["L'application dans le navigateur, avec python src/chat.py en secours"], 24, RGBColor(0xC9, 0xD8, 0xEE), align=PP_ALIGN.CENTER)
+texte(slide, 0.9, 4.6, 11.5, 1, ["Un thème, un lieu, une date, une question vague et une question hors sujet, puis la page Qualité"], 18,
       RGBColor(0xC9, 0xD8, 0xEE), align=PP_ALIGN.CENTER)
 
-# 12 : limites et recommandations
-slide = diapo("Limites et recommandations", 12)
+# 15 : limites et recommandations
+slide = diapo("Limites et recommandations", 15)
 tableau(slide, 0.6, 1.5, 12.1, [["Priorité", "Recommandation", "Ce que ça corrige"],
-                                ["1", "Recherche hybride BM25 + vecteurs", "thèmes, noms de lieux"],
-                                ["1", "Filtres date et ville extraits de la question", "questions par date et par lieu"],
+                                ["Fait", "Recherche hybride BM25 + vecteurs", "thèmes, noms de lieux"],
+                                ["Fait", "Filtres date et ville extraits de la question", "questions par date et par lieu"],
                                 ["2", "API Mistral directe, quota dédié", "erreurs 429 d'OpenRouter"],
                                 ["2", "Mise à jour quotidienne et incrémentale", "fraîcheur des évènements"],
                                 ["3", "Base vectorielle (Qdrant, pgvector) à l'échelle nationale", "mémoire, filtrage, mises à jour"],
-                                ["3", "Jeu de test rejoué chaque semaine + suivi", "dérives de qualité"]],
+                                ["3", "Rejeu automatique du jeu de test et alertes", "dérives de qualité"]],
         [1.3, 6.4, 4.4], 16)
 texte(slide, 0.6, 5.3, 12, 1.5, [
-    "Le POC marche de bout en bout, et l'évaluation montre où l'améliorer.",
-    "Le jeu de test n'est valable que jusqu'au 30 octobre 2026 : il faudra le mettre à jour."], 18)
+    "L'évaluation a montré où améliorer le POC, et la V2 l'a confirmé. Le maillon faible est maintenant la génération.",
+    "Le jeu de test se rejoue à sa date d'origine, mais il faudra annoter de nouvelles questions."], 18)
 
 pres.save("livrables/presentation.pptx")

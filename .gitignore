@@ -12,6 +12,10 @@ data/raw/
 data/processed/
 data/faiss_index/
 
+# Traces de l'application : avis et journal des réponses, avec les questions posées
+data/avis.jsonl
+data/journal.jsonl
+
 # Fichiers de travail locaux
 conv.md
 notes-perso/

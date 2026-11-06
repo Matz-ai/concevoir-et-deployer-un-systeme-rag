@@ -6,6 +6,7 @@
  *   sources    { sources: Source[] }        dès que la recherche a répondu, avant le texte
  *   texte      { texte: string }            un morceau de réponse
  *   citations  { cites: number[], inconnus: number[] }   les [n] relevés par le serveur
+ *   cout       Cout                         juste avant fin
  *   erreur     { message: string, reessai: boolean }
  *   fin        {}
  */
@@ -36,6 +37,15 @@ export interface Filtres {
   theme: string | null;
 }
 
+/** Ce qu'a coûté une réponse : `recherche_s` compte aussi la lecture des filtres. */
+export interface Cout {
+  jetons_entree: number;
+  jetons_sortie: number;
+  euros: number;
+  recherche_s: number;
+  generation_s: number;
+}
+
 export interface Echange {
   question: string;
   filtres?: Filtres;
@@ -45,6 +55,7 @@ export interface Echange {
   sources: Source[];
   /** Donnés par le serveur à la fin ; d'ici là, l'interface relève les [n] elle-même. */
   citations?: { cites: number[]; inconnus: number[] };
+  cout?: Cout;
   erreur?: { message: string; reessai: boolean };
   etat: "en_cours" | "fini" | "arrete";
 }
@@ -80,6 +91,8 @@ export function appliquer(e: Echange, { nom, donnees }: Evenement): Echange {
       return { ...e, reponse: e.reponse + String(donnees.texte), erreur: undefined };
     case "citations":
       return { ...e, citations: donnees as Echange["citations"] };
+    case "cout":
+      return { ...e, cout: donnees as unknown as Cout };
     case "erreur": {
       const erreur = donnees as Echange["erreur"] & {};
       return { ...e, erreur, etat: erreur.reessai ? e.etat : "fini" };

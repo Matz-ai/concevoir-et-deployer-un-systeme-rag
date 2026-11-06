@@ -23,6 +23,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Logo />
           </a>
           <span className="bandeau-sous-titre">L'assistant sorties de la Seine-Saint-Denis</span>
+          <a className="bandeau-lien" href="/qualite">Qualité</a>
         </header>
         {children}
       </body>

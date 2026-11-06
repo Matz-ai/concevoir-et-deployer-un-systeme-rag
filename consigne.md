@@ -389,7 +389,7 @@ la liste ci-dessus. La V2 ajoute deux choses, et seulement deux, que l'énoncé 
 | Ajout | Ce que c'est | Pourquoi |
 | --- | --- | --- |
 | `api/` | une API FastAPI qui expose la chaîne de `src/rag.py` | le navigateur ne peut pas importer du Python : l'API diffuse la réponse au fil de l'eau (SSE), avec ses sources et ses citations |
-| `web/` | une interface Next.js (chat, cartes d'évènements, citations cliquables) | montrer le POC à des utilisateurs de Puls-Events, y compris sur téléphone, plutôt qu'en ligne de commande |
+| `web/` | une interface Next.js (chat, cartes d'évènements, citations cliquables, carte des lieux avec Leaflet et OpenStreetMap, page Qualité) | montrer le POC à des utilisateurs de Puls-Events, y compris sur téléphone, plutôt qu'en ligne de commande, et répondre visuellement aux questions 5 et 6 de la soutenance |
 
 La chaîne imposée ne change pas : LangChain, Faiss, embeddings et génération Mistral, pandas,
 OpenAgenda. `src/chat.py` reste la démo live demandée par l'énoncé, et `src/evaluate.py` la mesure de

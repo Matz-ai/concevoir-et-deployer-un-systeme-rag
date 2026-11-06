@@ -2,7 +2,7 @@
 
 **Assistant de recommandation d'évènements culturels en Seine-Saint-Denis**
 
-Mathieu Zinzen — Data Engineer freelance pour Puls-Events — septembre 2026
+Mathieu Zinzen — Data Engineer freelance pour Puls-Events — POC de septembre 2026, V2 de novembre 2026
 
 ---
 
@@ -383,3 +383,74 @@ d'utilisateurs, puisque ses réponses attendues vieillissent avec le corpus.
 
 Les deux premières recommandations s'appuient sur des métadonnées déjà présentes dans l'index : elles
 ne demandent pas de refaire le pipeline, et le jeu de test permettra de mesurer leur effet.
+
+---
+
+## 7. Au-delà du POC : la V2
+
+Les sections précédentes décrivent le POC déposé le 25 septembre 2026, figé sous le tag
+`depot-openclassrooms-2026-09-25`. La V2 applique ensuite les recommandations de priorité 1 et une partie
+du suivi proposé en 6.5. La chaîne imposée ne change pas (LangChain, Faiss, Mistral, OpenAgenda) ; deux
+briques s'y ajoutent, hors énoncé : une API FastAPI (`api/`) et une interface Next.js (`web/`).
+`src/chat.py` reste la démo de secours.
+
+### 7.1 Une application web
+
+`POST /api/chat` diffuse la réponse en flux SSE : les filtres lus, les sources dès que la recherche a
+répondu, le texte au fil de l'eau, puis les citations vérifiées et le coût. L'interface affiche des
+citations cliquables qui mènent à la carte de chaque évènement, une carte OpenStreetMap (Leaflet) des lieux
+cités, et s'utilise aussi sur téléphone. Pas d'historique envoyé au modèle, comme dans le POC.
+
+### 7.2 De meilleures réponses
+
+| Ajout | Effet recherché |
+| --- | --- |
+| Recherche hybride : BM25 + Faiss, fusionnés par l'`EnsembleRetriever` de LangChain | retrouver un mot exact comme « jazz », qu'un vecteur noie |
+| Filtres lus par Mistral en sortie structurée : commune, période, âge, thème | transformer « en décembre » en dates, appliquées aux métadonnées |
+| Puces de filtres que l'utilisateur corrige | rendre visible une mauvaise lecture de la question |
+| Demande de précision si aucun filtre n'est lu | ne pas répondre au hasard à « un truc sympa ? » |
+
+Le jeu de test passe à 22 questions avec deux questions vagues. Pour comparer à conditions égales, les deux
+versions sont rejouées à la date du 25 septembre (`DATE_REFERENCE`). La V1 est la chaîne sans recherche
+hybride ni filtres :
+
+| Type | Correctes, V1 | V2 | Rappel, V1 | V2 |
+| --- | :-: | :-: | :-: | :-: |
+| Thème | 5 / 8 | 6 / 8 | 8 / 15 | 15 / 15 |
+| Lieu | 1 / 5 | 4 / 5 | 3 / 6 | 6 / 6 |
+| Date | 1 / 4 | 4 / 4 | 1 / 5 | 5 / 5 |
+| Hors corpus | 3 / 3 | 2 / 3 | — | — |
+| Précision | 0 / 2 | 2 / 2 | — | — |
+| **Total** | **10 / 22** | **18 / 22** | **12 / 26** | **26 / 26** |
+
+Le diagnostic de la section 5 est confirmé : réparer la recherche fait presque doubler le score. Ces
+chiffres appellent trois réserves :
+
+- **Le maillon faible a changé.** Le rappel est à 100 %, mais la génération reste imparfaite : sur le jazz,
+  les deux concerts sont dans le contexte et le modèle n'en cite qu'un.
+- **Le score varie d'une exécution à l'autre.** La relecture humaine donne 19 / 22 (la météo est un refus
+  correct, jugé trop court). Un rejeu du 6 novembre sur l'index reconstruit redonne 18 / 22 et 26 / 26, mais
+  quatre verdicts basculent, deux dans chaque sens : il faut comparer des tendances, pas un point isolé.
+- **Risque de surapprentissage.** Donner le thème à BM25 plutôt que la question entière a été choisi sur ce
+  jeu (rappel de 22 à 26 sur 26). Il faudra le contrôler sur de nouvelles questions annotées.
+
+Le coût : chaque question fait désormais deux appels Mistral, lecture des filtres puis réponse.
+
+### 7.3 Suivre la qualité en production
+
+L'application mesure maintenant une partie des indicateurs de la section 6.5, réunis sur une page `/qualite` :
+
+| Indicateur | Source | Valeur observée |
+| --- | --- | --- |
+| Score et rappel, par type de question, V1 contre V2 | `data/evaluation_v1.csv`, `evaluation_v2.csv` | 18 / 22, 26 / 26 |
+| Détail : attendu, obtenu, verdict du juge | jeu de test et évaluation | 22 questions |
+| Avis 👍 / 👎 et commentaires | `data/avis.jsonl` | à collecter auprès d'utilisateurs |
+| Jetons et coût par question | usage renvoyé par OpenRouter, `data/journal.jsonl` | 0,0009 € en moyenne |
+| Temps de recherche et de génération | `data/journal.jsonl` | 2,2 s et 1,3 s en moyenne |
+
+Le coût et les temps portent sur 11 questions de test, le 6 novembre : un ordre de grandeur, pas une mesure
+de production. La détection de dérive reste à automatiser : rejouer le jeu de test chaque semaine, comparer
+au score de référence et alerter en cas de baisse, regarder la part d'avis négatifs et surveiller la
+fraîcheur de l'index. Les tests de qualité l'ont montré pendant la V2 : 61 évènements ont dépassé un an en
+deux semaines, et le contrôle a échoué tant que le dataset n'a pas été régénéré, puis l'index reconstruit
+(2 066 évènements, 3 481 vecteurs).
