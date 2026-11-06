@@ -142,7 +142,7 @@ l'extraction du 25 septembre 2026.
 │   ├── chat.py          # démo live : chatbot en ligne de commande
 │   └── evaluate.py      # évaluation sur le jeu de test annoté (juge Mistral)
 ├── api/
-│   └── main.py          # V2 : API FastAPI, réponse en flux SSE avec sources et citations
+│   └── main.py          # V2 : API FastAPI, flux SSE (sources, citations, coût), avis, chiffres de /qualite
 ├── web/                 # V2 : interface Next.js (app/, components/, lib/, tests/)
 ├── demo.ps1             # V2 : lance l'API puis l'interface web
 ├── tests/
@@ -153,14 +153,15 @@ l'extraction du 25 septembre 2026.
 │   └── tests.yml        # pipeline CI : pytest à chaque push
 ├── livrables/
 │   ├── rapport_technique.md   # rapport technique, source Markdown
-│   ├── rapport_technique.pdf  # rapport technique, 9 pages
-│   ├── presentation.pptx      # présentation de soutenance, 12 slides
+│   ├── rapport_technique.pdf  # rapport technique, POC puis V2
+│   ├── presentation.pptx      # présentation de soutenance, 15 slides
 │   └── generer_presentation.py  # régénère la présentation (pip install python-pptx)
 └── data/
     ├── qa_test.json     # jeu de test annoté : 20 questions / réponses attendues (22 en V2)
     ├── evaluation.csv   # résultats de la dernière évaluation, question par question
     ├── evaluation_v1.csv  # V2 : évaluation de la chaîne du lot 1, base de comparaison
     ├── evaluation_v2.csv  # V2 : évaluation après le lot 2 (recherche hybride, filtres)
+    ├── avis.jsonl, journal.jsonl  # V2 : avis et coût de chaque réponse, écrits par l'API, non versionnés
     ├── raw/             # réponses brutes de l'API          ┐
     ├── processed/       # dataset propre, prêt à indexer     ├ non versionnés,
     └── faiss_index/     # index vectoriel + métadonnées      ┘ reconstruits par les scripts
@@ -338,15 +339,15 @@ navigateur ──▶ web/ (Next.js, :3000) ──/api/*──▶ api/ (FastAPI, 
 | Brique | Ce qu'elle fait |
 | --- | --- |
 | `src/rag.py` | numérote les évènements du contexte `[1]`, `[2]`… et demande au modèle de les citer par ce numéro |
-| `api/main.py` | `POST /api/chat` en flux SSE : les sources dès que Faiss a répondu, puis le texte au fil de l'eau, puis les citations vérifiées (un `[n]` sans évènement est signalé). `GET /api/evenements/{uid}`, `GET /api/sante` |
-| `web/` | Next.js 15, React 19, TypeScript. Chat en streaming, citations cliquables qui mènent à la carte de l'évènement, cartes avec image, dates, lieu et lien OpenAgenda. Mobile d'abord, mode sombre |
+| `api/main.py` | `POST /api/chat` en flux SSE : les sources dès que Faiss a répondu, puis le texte au fil de l'eau, puis les citations vérifiées (un `[n]` sans évènement est signalé). `GET /api/evenements/{uid}`, `GET /api/sante`, `POST /api/avis`, `GET /api/qualite` |
+| `web/` | Next.js 15, React 19, TypeScript. Chat en streaming, citations cliquables qui mènent à la carte de l'évènement, cartes avec image, dates, lieu et lien OpenAgenda, carte des lieux, page `/qualite`. Mobile d'abord, mode sombre |
 
 ![Réponse à « Quelles pièces de Shakespeare sont jouées ? » : citations en pastilles et cartes des évènements cités](livrables/captures/reponse-shakespeare.jpg)
 
 Les cinq questions de la démo passent dans le navigateur avec les mêmes évènements que
 `src/chat.py` (23/10/2026). Les sources arrivent en une demi-seconde, avant le texte (environ 3 s
 pour le premier mot, 5 s pour la réponse entière). Autres captures dans `livrables/captures/` :
-accueil en mode sombre, sources affichées pendant la rédaction, réponse sur téléphone (375 px).
+accueil en mode sombre, sources affichées pendant la rédaction, réponse et carte sur téléphone (375 px).
 
 Pas d'historique envoyé au modèle, comme dans le POC : les échanges restent affichés, mais chaque
 question part seule. Une erreur 429 d'OpenRouter est retentée par l'API, et l'interface affiche
@@ -369,11 +370,14 @@ main, deux terminaux : `python -m uvicorn main:app --app-dir api --port 8000` à
 **Tests.** `pytest` couvre aussi l'API (`tests/test_api.py`) sans réseau : l'index et le modèle Mistral
 sont remplacés par des faux, ce qui permet à la CI de vérifier l'ordre du flux, les citations et les
 nouveaux essais sur 429. Côté web, `npm test` dans `web/` vérifie la lecture du flux SSE, le
-relevé des citations et le libellé des puces de filtres ; la CI lance aussi `npm run build`.
+relevé des citations, le libellé des puces de filtres et le regroupement des repères par lieu ; la CI
+lance aussi `npm run build`.
 
-> L'extraction du 25/09/2026 est conservée, mais `preprocess.py` relancé le 23/10/2026 écarte
-> 178 évènements de plus, qui ont maintenant commencé il y a plus d'un an : **2 120 évènements,
-> 3 558 vecteurs**. Les 20 évènements du jeu de test sont tous encore là.
+> L'extraction du 25/09/2026 est conservée, mais `preprocess.py` relancé écarte les évènements qui ont
+> entre-temps commencé il y a plus d'un an : **2 120 évènements, 3 558 vecteurs** le 23/10/2026, **2 066
+> et 3 481** le 06/11/2026. Les évènements du jeu de test sont tous encore là. Le contrôle « moins d'un
+> an » de `pytest` échoue quand le dataset local a vieilli : c'est voulu, il faut alors relancer
+> `preprocess.py` et `build_index.py`.
 
 ### Lot 2 : de meilleures réponses
 
@@ -420,6 +424,28 @@ contrôler sur de nouvelles questions annotées.
 
 Chaque question coûte maintenant deux appels Mistral au lieu d'un (lecture des filtres, puis
 réponse), soit une à deux secondes de plus avant les sources.
+
+### Lot 3 : la vitrine
+
+| Ajout | Ce qui est fait | Pourquoi |
+| --- | --- | --- |
+| Carte des lieux | Leaflet et tuiles OpenStreetMap, un repère par lieu cité, survol synchronisé avec les cartes d'évènements. Sur téléphone, onglets Liste / Carte | voir d'un coup d'œil où ça se passe |
+| Avis | 👍 / 👎 et commentaire facultatif, enregistrés dans `data/avis.jsonl` avec la question, les filtres, les sources et la réponse | la satisfaction réelle, que le jeu de test ne capte pas |
+| Coût et temps | jetons relevés par `UsageMetadataCallbackHandler` (`stream_usage=True`), convertis en euros, temps de recherche et de génération ; évènement SSE `cout`, journal `data/journal.jsonl` | surveiller la santé du service et le coût d'une question |
+| Page `/qualite` | score et rappel V1 / V2 par type de question, détail question par question, avis, coût et temps moyens | la réponse visuelle aux questions 5 et 6 de la soutenance |
+| Finitions | squelettes de cartes, contraste, clavier, favicon | une démo sans accroc |
+
+![Page Qualité : score et rappel V1 contre V2, coût et temps moyens, avis](livrables/captures/qualite.jpg)
+
+Sur 11 questions posées le 06/11/2026 : 0,0009 € par question en moyenne, 2,2 s pour lire les filtres et
+chercher, 1,3 s pour générer. Ce n'est pas une mesure de production, mais un ordre de grandeur. Le prix est
+celui de `mistral-large-2512` sur OpenRouter, 0,50 $ et 1,50 $ par million de jetons, converti à 0,89 € pour
+un dollar (constantes de `api/main.py`).
+
+Rejeu de contrôle du 06/11/2026 sur l'index reconstruit, avec `DATE_REFERENCE=2026-09-25` : encore 18 / 22
+et 26 / 26, mais quatre verdicts basculent : marionnettes et Triton deviennent faux, musée Paul-Éluard et
+météo à Bobigny deviennent corrects. Il faut comparer des tendances, pas un point isolé. Les fichiers
+versionnés restent ceux du lot 2.
 
 ---
 
