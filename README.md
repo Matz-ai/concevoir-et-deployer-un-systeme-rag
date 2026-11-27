@@ -5,6 +5,8 @@ OpenAgenda. Recherche dans un index Faiss, réponse générée par Mistral, le t
 
 Projet 11 du parcours Data Engineer OpenClassrooms ([énoncé](consigne.md)).
 
+![Réponse à « Quelles pièces de Shakespeare sont jouées ? »](livrables/captures/reponse-shakespeare.jpg)
+
 ## Stack
 
 - Python 3.12, `venv`, pandas
