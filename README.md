@@ -15,7 +15,7 @@ Projet 11 du parcours Data Engineer OpenClassrooms ([énoncé](consigne.md)).
   (API compatible OpenAI : repasser sur l'API Mistral, c'est changer le `base_url`)
 - Faiss pour l'index, LangChain pour la chaîne
 - pytest + GitHub Actions
-- V2 : API FastAPI et interface Next.js
+- API FastAPI et interface Next.js
 
 ## Installation
 
@@ -55,13 +55,13 @@ http://127.0.0.1:3000.
 - Texte vectorisé : titre, mots-clés, lieu, ville, dates et description. Chunks de 1 000 caractères.
 - Index `IndexFlatL2` : recherche exacte, suffisante pour quelques milliers de vecteurs.
 - Seuls les évènements à venir sont proposés (filtre sur `date_fin`).
-- V2 : recherche hybride BM25 + Faiss, et filtres (ville, dates, âge, thème) lus dans la question.
+- Recherche hybride BM25 + Faiss, et filtres (ville, dates, âge, thème) lus dans la question.
 
 ## Résultats
 
 Jeu de test de 22 questions annotées, réponses jugées par Mistral puis relues à la main.
 
-| | POC | V2 |
+| | Faiss seul | Hybride + filtres |
 | --- | :-: | :-: |
 | Réponses correctes | 10 / 22 | 18 / 22 |
 | Évènements attendus retrouvés | 12 / 26 | 26 / 26 |
@@ -73,8 +73,8 @@ Détail dans `data/evaluation_v1.csv`, `data/evaluation_v2.csv` et dans le
 
 ```
 src/         extraction, nettoyage, index, chaîne RAG, chatbot, évaluation
-api/         API FastAPI (V2)
-web/         interface Next.js (V2)
+api/         API FastAPI
+web/         interface Next.js
 tests/       tests pytest
 data/        jeu de test et résultats d'évaluation
 livrables/   rapport technique et présentation

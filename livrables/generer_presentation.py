@@ -76,7 +76,7 @@ slide.background.fill.solid()
 slide.background.fill.fore_color.rgb = BLEU
 texte(slide, 0.9, 2.2, 11.5, 1.2, ["Un assistant RAG pour recommander des évènements culturels"], 38, BLANC, True)
 texte(slide, 0.9, 3.7, 11.5, 0.6, ["POC pour Puls-Events avec OpenAgenda, Faiss, Mistral et LangChain"], 22, RGBColor(0xC9, 0xD8, 0xEE))
-texte(slide, 0.9, 5.6, 11.5, 0.9, ["Mathieu Zinzen, Data Engineer", "POC de septembre 2026, V2 de novembre 2026"], 16, RGBColor(0xC9, 0xD8, 0xEE))
+texte(slide, 0.9, 5.6, 11.5, 0.9, ["Mathieu Zinzen, Data Engineer", "Novembre 2026"], 16, RGBColor(0xC9, 0xD8, 0xEE))
 
 # 2 : le besoin
 slide = diapo("Le besoin de Puls-Events", 2)
@@ -113,8 +113,8 @@ for i, (titre, detail) in enumerate([("OpenAgenda", "API open data"), ("extract.
         fleche(slide, 2.65 + i * 2.55, 2.33)
 boite(slide, 5.7, 3.3, 2.0, 0.6, ["pytest + CI"], fond=RGBColor(0xFD, 0xEB, 0xD9), couleur=ORANGE, taille=14)
 texte(slide, 0.6, 4.2, 12, 0.5, ["En ligne : ce qui se passe quand on pose une question (src/rag.py)"], 17, CLAIR, True)
-for i, (titre, detail) in enumerate([("Question", "chat.py"), ("mistral-embed", "vectorise"),
-                                     ("Faiss", "10 chunks à venir"), ("Mistral Large", "rédige"),
+for i, (titre, detail) in enumerate([("Question", "en français"), ("Mistral", "lit les filtres"),
+                                     ("BM25 + Faiss", "10 chunks filtrés"), ("Mistral Large", "rédige"),
                                      ("Réponse", "+ sources")]):
     boite(slide, 0.6 + i * 2.55, 4.8, 2.0, 1.2, [titre, detail], fond=BLEU, couleur=BLANC, taille=17)
     if i < 4:
@@ -158,64 +158,36 @@ texte(slide, 0.6, 4.6, 12, 2, [
 
 # 8 : la chaîne
 slide = diapo("La chaîne LangChain + Mistral", 8)
-texte(slide, 0.8, 1.5, 6, 5, [
-    "Recherche : 10 chunks, seulement parmi les évènements pas encore terminés.",
-    "On ajoute la date complète à chaque chunk, car OpenAgenda n'affiche pas l'année.",
-    "Génération : mistral-large, température 0, environ 0,002 $ par question.",
-    "Le prompt demande de répondre seulement avec les évènements fournis, et de le dire s'il n'y a rien.",
-    "Pas d'historique : chaque question est traitée à part."], 19)
-boite(slide, 7.3, 1.6, 5.3, 2.2, ["Pourquoi LangChain ?", "Chaque brique (découpage, embeddings, Faiss, prompt, modèle) se remplace facilement, et la chaîne tient en quelques lignes."], taille=19)
-boite(slide, 7.3, 4.2, 5.3, 2.0, ["Pourquoi filtrer les dates ?", "Quand on demandait au modèle d'ignorer les évènements passés, il ne le faisait pas toujours. Avec un filtre, c'est garanti."], taille=19)
+for i, (titre, detail) in enumerate([("1. Lire la question", "Mistral remplit ville, dates, âge, thème"),
+                                     ("2. Chercher", "BM25 (mots exacts) + Faiss (sens), filtrés"),
+                                     ("3. Répondre", "seulement avec les évènements trouvés")]):
+    boite(slide, 0.6 + i * 4.2, 1.5, 3.7, 1.4, [titre, detail], fond=BLEU, couleur=BLANC, taille=19)
+    if i < 2:
+        fleche(slide, 4.35 + i * 4.2, 2.03)
+texte(slide, 0.8, 3.3, 6, 3.5, [
+    "Pas d'agent : chaque question suit toujours ces trois étapes.",
+    "« Ce week-end » devient deux vraies dates, appliquées aux métadonnées.",
+    "Les évènements terminés sont écartés par le code, pas par le modèle.",
+    "Question trop vague : l'assistant demande une précision."], 18)
+boite(slide, 7.3, 3.4, 5.3, 2.8, ["Pourquoi LangChain ?", "Imposé par l'énoncé, mais surtout des briques déjà testées : BM25, fusion des classements, sortie structurée, nouvelles tentatives, streaming, comptage des jetons. Et un standard que l'équipe connaît."], taille=18)
 
 # 9 : protocole
 slide = diapo("Protocole d'évaluation", 9)
 texte(slide, 0.8, 1.5, 6, 5, [
-    "20 questions écrites à la main à partir d'évènements présents dans l'index.",
-    "8 sur un thème, 5 sur un lieu, 4 sur une date et 3 hors sujet.",
+    "22 questions écrites à la main à partir d'évènements présents dans l'index.",
+    "8 sur un thème, 5 sur un lieu, 4 sur une date, 3 hors sujet, 2 trop vagues.",
     "Critère de l'énoncé : même sens et mêmes informations que la réponse attendue.",
-    "C'est un modèle Mistral qui juge. J'ai relu ses 20 verdicts et je suis d'accord sur 18.",
+    "Un modèle Mistral juge, et j'ai relu chaque verdict.",
     "On mesure aussi, sans LLM, si la recherche a trouvé les bons évènements."], 19)
 tableau(slide, 7.2, 1.6, 5.5, [["Autre méthode", "Pourquoi je ne l'ai pas gardée"], ["Comparaison exacte", "refuse toute reformulation"],
                                ["Mots-clés", "ne comprend pas une réponse négative"], ["Similarité", "ne vérifie ni les dates ni les lieux"]], [2.3, 3.2], 16)
 
 # 10 : résultats
-slide = diapo("Résultats : 9 réponses correctes sur 20", 10)
+slide = diapo("Résultats : de 10 à 18 sur 22", 10)
 donnees = CategoryChartData()
-donnees.categories = ["Thème (8)", "Lieu (5)", "Date (4)", "Hors corpus (3)"]
-donnees.add_series("Correctes (%)", (50, 40, 25, 67))
-graphique = slide.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(0.6), Inches(1.4), Inches(6.6), Inches(5.3), donnees).chart
-graphique.has_legend, graphique.has_title = False, False
-graphique.plots[0].has_data_labels = True
-graphique.plots[0].data_labels.number_format, graphique.plots[0].data_labels.number_format_is_linked = '0"%"', False
-graphique.plots[0].data_labels.position = XL_LABEL_POSITION.OUTSIDE_END
-graphique.plots[0].series[0].format.fill.solid()
-graphique.plots[0].series[0].format.fill.fore_color.rgb = CLAIR
-graphique.value_axis.maximum_scale, graphique.value_axis.has_major_gridlines = 100, False
-graphique.value_axis.visible = False
-graphique.category_axis.tick_labels.font.size = Pt(14)
-texte(slide, 7.6, 1.6, 5.2, 5.3, [
-    "La recherche retrouve en moyenne 52 % des évènements attendus.",
-    "Sur les 11 erreurs, 10 viennent d'une recherche incomplète.",
-    "Quand la recherche trouve tout, 6 réponses sur 7 sont justes.",
-    "C'est donc la recherche qu'il faut améliorer en priorité.",
-    "Exemple : les concerts de jazz sortent aux rangs 114 et 388, car « jazz » n'est que dans leurs mots-clés."], 18)
-
-# 11 : la V2, une application
-slide = diapo("La V2 : une vraie application", 11)
-slide.shapes.add_picture("livrables/captures/reponse-shakespeare.jpg", Inches(0.6), Inches(1.45), height=Inches(5.3))
-texte(slide, 8.0, 1.5, 4.9, 5.3, [
-    "Le POC reste figé. La V2 ajoute une API FastAPI et une interface Next.js.",
-    "La chaîne ne change pas : LangChain, Faiss, Mistral.",
-    "Les sources s'affichent avant le texte, qui s'écrit au fil de l'eau.",
-    "Chaque citation mène à sa fiche, et une carte montre les lieux.",
-    "Ça marche aussi sur téléphone."], 18)
-
-# 12 : la V2, les résultats
-slide = diapo("Résultats de la V2 : de 10 à 18 sur 22", 12)
-donnees = CategoryChartData()
-donnees.categories = ["Thème (8)", "Lieu (5)", "Date (4)", "Hors corpus (3)", "Précision (2)"]
-donnees.add_series("V1", (5, 1, 1, 3, 0))
-donnees.add_series("V2", (6, 4, 4, 2, 2))
+donnees.categories = ["Thème (8)", "Lieu (5)", "Date (4)", "Hors corpus (3)", "Vague (2)"]
+donnees.add_series("Faiss seul", (5, 1, 1, 3, 0))
+donnees.add_series("Hybride + filtres", (6, 4, 4, 2, 2))
 graphique = slide.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, Inches(0.6), Inches(1.4), Inches(7.2), Inches(5.3), donnees).chart
 graphique.has_title = False
 graphique.has_legend, graphique.legend.include_in_layout = True, False
@@ -230,22 +202,21 @@ graphique.value_axis.maximum_scale, graphique.value_axis.has_major_gridlines = 9
 graphique.value_axis.visible = False
 graphique.category_axis.tick_labels.font.size = Pt(14)
 texte(slide, 8.1, 1.5, 4.8, 5.3, [
-    "Recherche hybride : BM25 pour les mots exacts, Faiss pour le sens.",
-    "Filtres lus dans la question : commune, période, âge, thème.",
-    "Rappel de la recherche : de 12 à 26 sur 26.",
-    "Le jazz reste faux : les concerts sont dans le contexte, le modèle n'en cite qu'un.",
+    "Avec Faiss seul, la recherche ratait le jazz (rangs 114 et 388) et les dates.",
+    "BM25 et les filtres : le rappel passe de 12 à 26 sur 26.",
+    "Le maillon faible est maintenant la génération : le modèle oublie un concert de jazz.",
     "Relu à la main : 19 sur 22."], 18)
 
-# 13 : suivi en production
-slide = diapo("Suivre la qualité en production", 13)
-slide.shapes.add_picture("livrables/captures/qualite.jpg", Inches(0.6), Inches(1.45), height=Inches(5.3))
-texte(slide, 7.9, 1.5, 5, 5.3, [
-    "La page Qualité réunit score, rappel, avis, coût et temps.",
-    "Le coût et le temps sont mesurés à chaque réponse : environ 0,001 € et 3,6 s, sur 11 questions de test.",
-    "Détecter une dérive : rejouer le jeu de test chaque semaine et comparer au score de référence.",
-    "Il reste à automatiser ce rejeu et les alertes."], 18)
+# 11 : l'application
+slide = diapo("L'application", 11)
+slide.shapes.add_picture("livrables/captures/reponse-shakespeare.jpg", Inches(0.6), Inches(1.45), height=Inches(5.3))
+texte(slide, 8.0, 1.5, 4.9, 5.3, [
+    "Une API FastAPI et une interface Next.js autour de la même chaîne.",
+    "Les sources s'affichent avant le texte, qui s'écrit au fil de l'eau.",
+    "Chaque citation mène à sa fiche, et une carte montre les lieux.",
+    "Une page Qualité suit le score, les avis, le coût (0,001 €) et le temps (3,5 s) par question."], 18)
 
-# 14 : démo
+# 12 : démo
 slide = pres.slides.add_slide(pres.slide_layouts[6])
 slide.background.fill.solid()
 slide.background.fill.fore_color.rgb = BLEU
@@ -254,18 +225,16 @@ texte(slide, 0.9, 3.7, 11.5, 0.6, ["L'application dans le navigateur, avec pytho
 texte(slide, 0.9, 4.6, 11.5, 1, ["Un thème, un lieu, une date, une question vague et une question hors sujet, puis la page Qualité"], 18,
       RGBColor(0xC9, 0xD8, 0xEE), align=PP_ALIGN.CENTER)
 
-# 15 : limites et recommandations
-slide = diapo("Limites et recommandations", 15)
+# 13 : limites et recommandations
+slide = diapo("Limites et recommandations", 13)
 tableau(slide, 0.6, 1.5, 12.1, [["Priorité", "Recommandation", "Ce que ça corrige"],
-                                ["Fait", "Recherche hybride BM25 + vecteurs", "thèmes, noms de lieux"],
-                                ["Fait", "Filtres date et ville extraits de la question", "questions par date et par lieu"],
-                                ["2", "API Mistral directe, quota dédié", "erreurs 429 d'OpenRouter"],
-                                ["2", "Mise à jour quotidienne et incrémentale", "fraîcheur des évènements"],
-                                ["3", "Base vectorielle (Qdrant, pgvector) à l'échelle nationale", "mémoire, filtrage, mises à jour"],
-                                ["3", "Rejeu automatique du jeu de test et alertes", "dérives de qualité"]],
+                                ["1", "API Mistral directe, quota dédié", "erreurs 429 d'OpenRouter"],
+                                ["1", "Mise à jour quotidienne et incrémentale", "fraîcheur des évènements"],
+                                ["2", "Rejeu automatique du jeu de test et alertes", "dérives de qualité"],
+                                ["3", "Base vectorielle (Qdrant, pgvector) à l'échelle nationale", "mémoire, filtrage, mises à jour"]],
         [1.3, 6.4, 4.4], 16)
-texte(slide, 0.6, 5.3, 12, 1.5, [
-    "L'évaluation a montré où améliorer le POC, et la V2 l'a confirmé. Le maillon faible est maintenant la génération.",
-    "Le jeu de test se rejoue à sa date d'origine, mais il faudra annoter de nouvelles questions."], 18)
+texte(slide, 0.6, 4.6, 12, 2, [
+    "L'évaluation a d'abord montré que la recherche était le problème, puis mesuré l'effet de la correction.",
+    "Le jeu de test vieillit avec les évènements : il faudra annoter de nouvelles questions."], 18)
 
 pres.save("livrables/presentation.pptx")
